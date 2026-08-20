@@ -1,0 +1,268 @@
+/* Diagnostic Advantage Section Styles */
+.da-section {
+  padding: 90px 20px;
+  background: var(--bg);
+}
+
+.da-container {
+  max-width: 1240px;
+  margin: 0 auto;
+}
+
+.da-header {
+  text-align: center;
+  max-width: 780px;
+  margin: 0 auto 56px;
+}
+
+.da-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 14px;
+  border-radius: var(--radius-full);
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  background: rgba(37, 99, 235, 0.08);
+  color: var(--primary);
+  border: 1px solid rgba(37, 99, 235, 0.18);
+  margin-bottom: 16px;
+}
+
+.da-title {
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--text-main);
+  letter-spacing: -0.025em;
+  line-height: 1.25;
+  margin-bottom: 14px;
+}
+
+.da-subtitle {
+  font-size: 16px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Desktop Comparison Table */
+.da-table-wrapper {
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-card);
+  background: #FFFFFF;
+}
+
+.da-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+}
+
+.da-table th {
+  padding: 20px 28px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  border-bottom: 1px solid var(--border);
+  background: #F8FAFC;
+}
+
+.da-col-capability {
+  width: 25%;
+}
+
+.da-col-traditional {
+  width: 37.5%;
+}
+
+.da-col-pbis {
+  width: 37.5%;
+  background: #EFF6FF !important;
+  border-left: 1px solid rgba(37, 99, 235, 0.2);
+}
+
+.da-pbis-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #2563EB;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.da-row td {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  vertical-align: middle;
+  transition: background-color 0.2s ease;
+}
+
+.da-row:last-child td {
+  border-bottom: none;
+}
+
+.da-cell-capability {
+  font-weight: 700;
+  color: var(--text-main);
+  background: #FFFFFF;
+}
+
+.da-cell-traditional {
+  color: var(--text-muted);
+  background: #FFFFFF;
+}
+
+.da-cell-pbis {
+  background: rgba(239, 246, 255, 0.5);
+  border-left: 1px solid rgba(37, 99, 235, 0.15);
+}
+
+.da-row:hover .da-cell-traditional {
+  background: rgba(248, 250, 252, 0.8);
+}
+
+.da-row:hover .da-cell-pbis {
+  background: rgba(239, 246, 255, 0.85);
+}
+
+.da-cell-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  line-height: 1.5;
+}
+
+.da-icon-minus {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #F1F5F9;
+  color: #94A3B8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.da-icon-check {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: #2563EB;
+  color: #FFFFFF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+}
+
+.da-pbis-highlight-text {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+/* Mobile & Tablet Responsive View */
+.da-mobile-cards {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.da-mobile-card {
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  background: #FFFFFF;
+  border: 1px solid var(--border);
+}
+
+.da-mobile-cap-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 14px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--border);
+}
+
+.da-mobile-comparison-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.da-mobile-box {
+  padding: 14px;
+  border-radius: var(--radius-md);
+  font-size: 13px;
+}
+
+.da-mobile-trad {
+  background: #F8FAFC;
+  border: 1px solid #E2E8F0;
+  color: var(--text-muted);
+}
+
+.da-mobile-pbis {
+  background: #EFF6FF;
+  border: 1px solid rgba(37, 99, 235, 0.25);
+}
+
+.da-mobile-label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.da-pbis-mobile-label {
+  color: #2563EB;
+}
+
+.da-mobile-text {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  line-height: 1.45;
+}
+
+.da-icon-minus-sm {
+  color: #94A3B8;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.da-icon-check-sm {
+  color: #2563EB;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* Responsive Media Queries */
+@media (max-width: 860px) {
+  .da-table-wrapper {
+    display: none;
+  }
+  .da-mobile-cards {
+    display: flex;
+  }
+  .da-title {
+    font-size: 26px;
+  }
+}
+
+@media (max-width: 580px) {
+  .da-mobile-comparison-grid {
+    grid-template-columns: 1fr;
+  }
+}
