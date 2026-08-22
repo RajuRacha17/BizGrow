@@ -1,22 +1,52 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { TrendingUp, ArrowRight, Building, User, Mail, Lock } from 'lucide-react'
+import { TrendingUp, ArrowRight, X } from 'lucide-react'
 import PublicNavbar from '../components/PublicNavbar'
 import Footer from '../components/Footer'
 import '../styles/RegisterPage.css'
 
 export default function RegisterPage() {
   const [formData, setFormData] = useState({
-    businessName: '',
     fullName: '',
     email: '',
     password: ''
   })
+  const [loading, setLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
+  const [successMsg, setSuccessMsg] = useState('')
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    navigate('/dashboard')
+    setLoading(true)
+    setErrorMsg('')
+    setSuccessMsg('')
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Registration failed')
+      }
+
+      setSuccessMsg('Account registered successfully! Redirecting to login...')
+
+      setTimeout(() => {
+        navigate('/login')
+      }, 1200)
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to connect to backend server')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -24,7 +54,31 @@ export default function RegisterPage() {
       <PublicNavbar />
 
       <div className="register-container page-fade-in" style={{ padding: '60px 20px' }}>
-        <div className="card register-card">
+        <div className="card register-card" style={{ position: 'relative' }}>
+          {/* Close / Cross Button */}
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            aria-label="Close"
+            title="Close"
+            style={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              padding: 6,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <X size={20} />
+          </button>
+
           {/* Brand Header */}
           <Link to="/" className="register-brand">
             <div className="register-brand-icon gradient-bg">
@@ -34,35 +88,30 @@ export default function RegisterPage() {
           </Link>
 
           <h2 className="register-title">Create your account</h2>
-          <p className="register-subtitle">Enter your details to launch your analytics workspace.</p>
+
+          {errorMsg && (
+            <div style={{ padding: '10px 14px', borderRadius: 8, backgroundColor: '#fee2e2', color: '#dc2626', fontSize: 13, marginBottom: 16, border: '1px solid #fca5a5' }}>
+              {errorMsg}
+            </div>
+          )}
+
+          {successMsg && (
+            <div style={{ padding: '10px 14px', borderRadius: 8, backgroundColor: '#dcfce7', color: '#166534', fontSize: 13, marginBottom: 16, border: '1px solid #86efac' }}>
+              {successMsg}
+            </div>
+          )}
 
           <form onSubmit={handleSubmit} className="register-form">
-            {/* 1. Business Name */}
-            <div>
-              <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Business Name</label>
-              <div className="register-input-wrapper">
-                <Building size={16} className="register-input-icon" />
-                <input
-                  className="input-field register-input-padded"
-                  type="text"
-                  required
-                  placeholder="Acme Corp"
-                  value={formData.businessName}
-                  onChange={(e) => setFormData({ ...formData, businessName: e.target.value })}
-                />
-              </div>
-            </div>
 
             {/* 2. Full Name */}
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Full Name</label>
               <div className="register-input-wrapper">
-                <User size={16} className="register-input-icon" />
                 <input
-                  className="input-field register-input-padded"
+                  className="input-field"
                   type="text"
                   required
-                  placeholder="Jane Doe"
+                  placeholder="Enter Your Full Name"
                   value={formData.fullName}
                   onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                 />
@@ -73,12 +122,11 @@ export default function RegisterPage() {
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Email</label>
               <div className="register-input-wrapper">
-                <Mail size={16} className="register-input-icon" />
                 <input
-                  className="input-field register-input-padded"
+                  className="input-field"
                   type="email"
                   required
-                  placeholder="jane@acme.com"
+                  placeholder="Enter email address"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                 />
@@ -89,9 +137,8 @@ export default function RegisterPage() {
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Password</label>
               <div className="register-input-wrapper">
-                <Lock size={16} className="register-input-icon" />
                 <input
-                  className="input-field register-input-padded"
+                  className="input-field"
                   type="password"
                   required
                   placeholder="••••••••"
@@ -101,8 +148,13 @@ export default function RegisterPage() {
               </div>
             </div>
 
-            <button className="btn-primary" type="submit" style={{ width: '100%', padding: '12px', fontSize: 15, marginTop: 6 }}>
-              Register & Launch Dashboard <ArrowRight size={16} />
+            <button
+              className="btn-primary"
+              type="submit"
+              disabled={loading}
+              style={{ width: '100%', padding: '12px', fontSize: 15, marginTop: 6, opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+            >
+              {loading ? 'Creating Account...' : <>Register <ArrowRight size={16} /></>}
             </button>
           </form>
 

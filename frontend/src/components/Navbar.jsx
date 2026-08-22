@@ -9,6 +9,12 @@ export default function Navbar({ title, darkMode, onToggleDark }) {
   const [searchQuery, setSearchQuery] = useState('')
   const navigate = useNavigate()
 
+  const savedUser = typeof window !== 'undefined' ? localStorage.getItem('user') : null
+  const userObj = savedUser ? JSON.parse(savedUser) : null
+  const initials = userObj?.fullName
+    ? userObj.fullName.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2)
+    : 'JD'
+
   const notifications = [
     { id: 1, type: 'alert', text: 'Sales target 87% achieved for Q3', time: '5m ago', icon: CheckCircle, color: '#10B981' },
     { id: 2, type: 'ai', text: 'AI generated 3 new recommendations', time: '1h ago', icon: Sparkles, color: '#7C3AED' },
@@ -86,8 +92,9 @@ export default function Navbar({ title, darkMode, onToggleDark }) {
           <button
             onClick={() => { setShowProfileMenu(!showProfileMenu); setShowNotifications(false); }}
             className="navbar-profile-btn"
+            title={userObj?.fullName || 'User Profile'}
           >
-            <div className="navbar-profile-avatar gradient-bg">JD</div>
+            <div className="navbar-profile-avatar gradient-bg">{initials}</div>
             <ChevronDown size={14} color="var(--text-muted)" />
           </button>
 

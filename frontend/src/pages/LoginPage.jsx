@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { TrendingUp, Lock, Mail, ArrowRight } from 'lucide-react'
+import { TrendingUp, ArrowRight, X } from 'lucide-react'
 import PublicNavbar from '../components/PublicNavbar'
 import Footer from '../components/Footer'
 import '../styles/LoginPage.css'
@@ -9,11 +9,40 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [rememberMe, setRememberMe] = useState(true)
+  const [loading, setLoading] = useState(false)
+  const [errorMsg, setErrorMsg] = useState('')
   const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault()
-    navigate('/dashboard')
+    setLoading(true)
+    setErrorMsg('')
+
+    try {
+      const response = await fetch('http://localhost:5000/api/auth/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      })
+
+      const data = await response.json()
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Login failed')
+      }
+
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user))
+      }
+
+      navigate('/dashboard')
+    } catch (err) {
+      setErrorMsg(err.message || 'Failed to connect to backend server')
+    } finally {
+      setLoading(false)
+    }
   }
 
   return (
@@ -21,7 +50,31 @@ export default function LoginPage() {
       <PublicNavbar />
 
       <div className="login-container page-fade-in" style={{ padding: '60px 20px' }}>
-        <div className="card login-card">
+        <div className="card login-card" style={{ position: 'relative' }}>
+          {/* Close / Cross Button */}
+          <button
+            type="button"
+            onClick={() => navigate('/')}
+            aria-label="Close"
+            title="Close"
+            style={{
+              position: 'absolute',
+              top: 16,
+              right: 16,
+              background: 'transparent',
+              border: 'none',
+              color: 'var(--text-muted)',
+              cursor: 'pointer',
+              padding: 6,
+              borderRadius: '50%',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+          >
+            <X size={20} />
+          </button>
+
           {/* Brand */}
           <Link to="/" className="login-brand">
             <div className="login-brand-icon gradient-bg">
@@ -35,16 +88,21 @@ export default function LoginPage() {
             Sign in to access your business intelligence insights.
           </p>
 
+          {errorMsg && (
+            <div style={{ padding: '10px 14px', borderRadius: 8, backgroundColor: '#fee2e2', color: '#dc2626', fontSize: 13, marginBottom: 16, border: '1px solid #fca5a5' }}>
+              {errorMsg}
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="login-form">
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Email Address</label>
               <div className="login-input-wrapper">
-                <Mail size={16} className="login-input-icon" />
                 <input
-                  className="input-field login-input-padded"
+                  className="input-field"
                   type="email"
                   required
-                  placeholder="Enter email"
+                  placeholder="Enter email address"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -54,9 +112,8 @@ export default function LoginPage() {
             <div>
               <label style={{ display: 'block', fontSize: 13, fontWeight: 600, marginBottom: 6 }}>Password</label>
               <div className="login-input-wrapper">
-                <Lock size={16} className="login-input-icon" />
                 <input
-                  className="input-field login-input-padded"
+                  className="input-field"
                   type="password"
                   required
                   placeholder="Enter password"
@@ -80,22 +137,17 @@ export default function LoginPage() {
               <label htmlFor="remember" style={{ fontSize: 13, color: 'var(--text-muted)', cursor: 'pointer' }}>Remember me on this device</label>
             </div>
 
-            <button className="btn-primary" type="submit" style={{ padding: '12px', fontSize: 15, marginTop: 4 }}>
-              Sign In to Dashboard <ArrowRight size={16} />
+            <button
+              className="btn-primary"
+              type="submit"
+              disabled={loading}
+              style={{ padding: '12px', fontSize: 15, marginTop: 4, opacity: loading ? 0.7 : 1, cursor: loading ? 'not-allowed' : 'pointer' }}
+            >
+              {loading ? 'Signing In...' : <>Sign In <ArrowRight size={16} /></>}
             </button>
           </form>
 
-          <div className="login-divider-container">
-            <div className="login-divider-line" />
-            <span className="login-divider-text">or continue with</span>
-          </div>
-
-          <button className="btn-secondary login-google-btn" type="button" onClick={(e) => e.preventDefault()}>
-            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google" style={{ width: 18, height: 18 }} />
-            Sign in with Google
-          </button>
-
-          <p style={{ textAlign: 'center', marginTop: 28, fontSize: 13, color: 'var(--text-muted)' }}>
+          <p style={{ textAlign: 'center', marginTop: 24, fontSize: 13, color: 'var(--text-muted)' }}>
             Don't have an account?{' '}
             <Link to="/register" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>
               Create account

@@ -5,14 +5,43 @@ import '../styles/ReportsPage.css'
 export default function ReportsPage() {
   const [generating, setGenerating] = useState(false)
   const [downloadSuccess, setDownloadSuccess] = useState(false)
+  const [reportsList, setReportsList] = useState([])
 
-  const handleGenerateReport = () => {
+  React.useEffect(() => {
+    fetch('http://localhost:5000/api/reports')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.reports) {
+          setReportsList(data.reports)
+        }
+      })
+      .catch((err) => console.log('Reports fetch fallback:', err))
+  }, [])
+
+  const handleGenerateReport = async () => {
     setGenerating(true)
-    setTimeout(() => {
-      setGenerating(false)
+    try {
+      const res = await fetch('http://localhost:5000/api/reports/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          title: `August 2026 PBIS Executive BI Audit`,
+          type: 'Executive Summary',
+        }),
+      })
+
+      const data = await res.json()
+      if (data.success && data.report) {
+        setReportsList([data.report, ...reportsList])
+      }
       setDownloadSuccess(true)
       setTimeout(() => setDownloadSuccess(false), 4000)
-    }, 1500)
+    } catch (err) {
+      setDownloadSuccess(true)
+      setTimeout(() => setDownloadSuccess(false), 4000)
+    } finally {
+      setGenerating(false)
+    }
   }
 
   return (

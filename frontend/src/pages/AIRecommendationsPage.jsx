@@ -57,12 +57,52 @@ const aiTips = [
 
 export default function AIRecommendationsPage() {
   const [applied, setApplied] = useState([])
+  const [recommendations, setRecommendations] = useState([])
 
-  const toggleApply = (id) => {
-    if (applied.includes(id)) {
+  React.useEffect(() => {
+    fetch('http://localhost:5000/api/recommendations')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.recommendations) {
+          const formatted = data.recommendations.map((rec) => ({
+            id: rec._id,
+            category: rec.category,
+            title: rec.title,
+            impact: `High Impact (${rec.upside})`,
+            difficulty: rec.priority === 'HIGH' ? 'Easy (Automated)' : 'Medium',
+            desc: rec.description,
+            icon: Sparkles,
+            color: rec.priority === 'HIGH' ? '#2563EB' : rec.priority === 'MEDIUM' ? '#7C3AED' : '#F59E0B',
+            status: rec.status,
+          }))
+          setRecommendations(formatted)
+          const alreadyApplied = data.recommendations
+            .filter((r) => r.status === 'APPLIED')
+            .map((r) => r._id)
+          setApplied(alreadyApplied)
+        }
+      })
+      .catch((err) => console.log('Recommendations fetch fallback:', err))
+  }, [])
+
+  const toggleApply = async (id) => {
+    const isDone = applied.includes(id)
+    const newStatus = isDone ? 'ACTIVE' : 'APPLIED'
+
+    if (isDone) {
       setApplied(applied.filter(item => item !== id))
     } else {
       setApplied([...applied, id])
+    }
+
+    try {
+      await fetch(`http://localhost:5000/api/recommendations/${id}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus }),
+      })
+    } catch (err) {
+      console.log('Update recommendation error:', err)
     }
   }
 
@@ -88,7 +128,7 @@ export default function AIRecommendationsPage() {
 
       {/* Cards List */}
       <div className="ai-cards-list">
-        {aiTips.map(tip => {
+        {(recommendations.length > 0 ? recommendations : aiTips).map(tip => {
           const Icon = tip.icon
           const isDone = applied.includes(tip.id)
 

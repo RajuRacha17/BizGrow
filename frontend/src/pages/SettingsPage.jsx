@@ -14,9 +14,42 @@ export default function SettingsPage() {
     currency: 'USD ($)'
   })
 
-  const handleSave = (e) => {
+  React.useEffect(() => {
+    fetch('http://localhost:5000/api/settings')
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success && data.profile) {
+          setBusinessInfo({
+            name: data.profile.businessName || 'TechVentures Inc.',
+            owner: data.profile.fullName || 'James Davidson',
+            email: data.profile.email || 'james@techventures.io',
+            phone: '+1 (555) 234-5678',
+            industry: 'SaaS & Technology',
+            currency: 'USD ($)'
+          })
+        }
+      })
+      .catch((err) => console.log('Settings fetch fallback:', err))
+  }, [])
+
+  const handleSave = async (e) => {
     e.preventDefault()
     setSaved(true)
+
+    try {
+      await fetch('http://localhost:5000/api/settings', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fullName: businessInfo.owner,
+          email: businessInfo.email,
+          businessName: businessInfo.name,
+        }),
+      })
+    } catch (err) {
+      console.log('Update settings error:', err)
+    }
+
     setTimeout(() => setSaved(false), 3000)
   }
 

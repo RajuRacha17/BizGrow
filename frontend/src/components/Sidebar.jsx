@@ -26,6 +26,11 @@ const navItems = [
 ]
 
 export default function Sidebar({ collapsed, onToggle }) {
+  const savedUser = typeof window !== 'undefined' ? localStorage.getItem('user') : null
+  const userObj = savedUser ? JSON.parse(savedUser) : null
+  const name = userObj?.fullName || 'James Davidson'
+  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'JD'
+
   return (
     <aside className={`sidebar-container ${collapsed ? 'sidebar-collapsed' : 'sidebar-expanded'}`}>
       {/* Brand Header */}
@@ -84,13 +89,13 @@ export default function Sidebar({ collapsed, onToggle }) {
       <div className="sidebar-footer">
         {!collapsed && (
           <div className="sidebar-user-card">
-            <div className="sidebar-avatar gradient-bg">JD</div>
+            <div className="sidebar-avatar gradient-bg">{initials}</div>
             <div style={{ overflow: 'hidden' }}>
-              <div className="sidebar-user-name">
-                James Davidson
+              <div className="sidebar-user-name" title={name}>
+                {name}
               </div>
               <div className="sidebar-user-role">
-                CEO, Enterprise
+                Active Account
               </div>
             </div>
           </div>
