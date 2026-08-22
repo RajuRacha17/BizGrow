@@ -11,14 +11,11 @@ export default function Footer() {
           {/* Column 1: PBIS Brand & Description */}
           <div className="pbis-footer-col pbis-footer-col-brand">
             <Link to="/" className="pbis-footer-brand">
-              <div className="pbis-footer-brand-icon gradient-bg">
-                <TrendingUp size={18} />
-              </div>
-              <span className="pbis-footer-brand-title">PBIS Analytics</span>
+              <img src="/logo.png" alt="BizGrow Logo" style={{ height: 46, objectFit: 'contain' }} />
             </Link>
 
             <p className="pbis-footer-desc">
-              PBIS transforms business data into meaningful insights, identifies performance gaps, and provides actionable recommendations to support better business decisions and growth.
+              BizGrow transforms business data into meaningful insights, identifies performance gaps, and provides actionable recommendations to support better business decisions and growth.
             </p>
 
             <div className="pbis-footer-soc-badge">
@@ -52,7 +49,7 @@ export default function Footer() {
 
         {/* Bottom Bar */}
         <div className="pbis-footer-bottom">
-          <p>© 2026 PBIS (Personalized Business Improvement System). All rights reserved.</p>
+          <p>© 2026 BizGrow (Personalized Business Improvement System). All rights reserved.</p>
           <p className="pbis-footer-tagline">Built with purpose to turn business data into better decisions.</p>
         </div>
       </div>

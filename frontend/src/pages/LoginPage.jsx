@@ -75,12 +75,9 @@ export default function LoginPage() {
             <X size={20} />
           </button>
 
-          {/* Brand */}
-          <Link to="/" className="login-brand">
-            <div className="login-brand-icon gradient-bg">
-              <TrendingUp size={22} />
-            </div>
-            <span style={{ fontSize: 22, fontWeight: 800 }}>PBIS Analytics</span>
+          {/* Brand Logo */}
+          <Link to="/" className="login-brand" style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
+            <img src="/logo.png" alt="BizGrow Logo" style={{ height: 64, objectFit: 'contain' }} />
           </Link>
 
           <h2 className="login-title">Welcome back</h2>

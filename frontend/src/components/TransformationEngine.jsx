@@ -16,8 +16,8 @@ import {
 import '../styles/TransformationEngine.css'
 
 export default function TransformationEngine() {
-  // Step 02 (index 1) is AI Analysis by default
-  const [activeStep, setActiveStep] = useState(1)
+  // No step active by default
+  const [activeStep, setActiveStep] = useState(null)
 
   const steps = [
     {
@@ -200,8 +200,8 @@ export default function TransformationEngine() {
     }
   ]
 
-  const currentDetail = stepDetails[activeStep] || stepDetails[1]
-  const DetailIcon = currentDetail.icon || Cpu
+  const currentDetail = stepDetails[activeStep !== null ? activeStep : 0]
+  const DetailIcon = currentDetail.icon || Database
 
   return (
     <section className="te-section" id="transformation-engine">

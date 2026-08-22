@@ -79,12 +79,9 @@ export default function RegisterPage() {
             <X size={20} />
           </button>
 
-          {/* Brand Header */}
-          <Link to="/" className="register-brand">
-            <div className="register-brand-icon gradient-bg">
-              <TrendingUp size={22} />
-            </div>
-            <span style={{ fontSize: 22, fontWeight: 800 }}>PBIS Analytics</span>
+          {/* Brand Header Logo */}
+          <Link to="/" className="register-brand" style={{ display: 'flex', justifyContent: 'center', marginBottom: 24 }}>
+            <img src="/logo.png" alt="BizGrow Logo" style={{ height: 64, objectFit: 'contain' }} />
           </Link>
 
           <h2 className="register-title">Create your account</h2>

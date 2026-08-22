@@ -67,7 +67,7 @@ const productPerformanceData = [
 ]
 
 export default function DashboardPage() {
-  const [activeWorkflowStep, setActiveWorkflowStep] = useState(2) // Default to step 02 (AI Analysis)
+  const [activeWorkflowStep, setActiveWorkflowStep] = useState(null) // No step active by default
   const [showUploadModal, setShowUploadModal] = useState(false)
   const [isProcessing, setIsProcessing] = useState(false)
   const [uploadStatus, setUploadStatus] = useState(null)

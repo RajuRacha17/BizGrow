@@ -27,10 +27,7 @@ export default function PublicNavbar() {
       <div className="pbis-pub-nav-container">
         {/* Brand Logo */}
         <Link to="/" className="pbis-pub-brand" onClick={closeMobileMenu}>
-          <div className="pbis-pub-brand-icon gradient-bg">
-            <TrendingUp size={20} />
-          </div>
-          <span className="pbis-pub-brand-title">PBIS Analytics</span>
+          <img src="/logo.png" alt="BizGrow Logo" style={{ height: 43, objectFit: 'contain' }} />
         </Link>
 
         {/* Center Desktop Navigation Links */}
