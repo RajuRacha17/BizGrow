@@ -28,8 +28,8 @@ const navItems = [
 export default function Sidebar({ collapsed, onToggle }) {
   const savedUser = typeof window !== 'undefined' ? localStorage.getItem('user') : null
   const userObj = savedUser ? JSON.parse(savedUser) : null
-  const name = userObj?.fullName || 'James Davidson'
-  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'JD'
+  const name = userObj?.fullName || 'User'
+  const initials = name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2) || 'US'
 
   return (
     <aside className={`sidebar-container ${collapsed ? 'sidebar-collapsed' : 'sidebar-expanded'}`}>
@@ -101,7 +101,7 @@ export default function Sidebar({ collapsed, onToggle }) {
           </div>
         )}
 
-        <Link to="/login" className="sidebar-logout-btn">
+        <Link to="/login" onClick={() => localStorage.removeItem('user')} className="sidebar-logout-btn">
           <LogOut size={18} />
           {!collapsed && <span>Logout</span>}
         </Link>

@@ -39,6 +39,10 @@ export default function RegisterPage() {
 
       setSuccessMsg('Account registered successfully! Redirecting to login...')
 
+      if (data.user) {
+        localStorage.setItem('user', JSON.stringify(data.user))
+      }
+
       setTimeout(() => {
         navigate('/login')
       }, 1200)

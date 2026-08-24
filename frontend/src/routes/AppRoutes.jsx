@@ -29,6 +29,11 @@ function DashboardLayout({ darkMode, onToggleDark }) {
   const location = useLocation()
   const title = routeTitles[location.pathname] || 'PBIS Analytics'
 
+  const savedUser = typeof window !== 'undefined' ? localStorage.getItem('user') : null
+  if (!savedUser) {
+    return <Navigate to="/login" replace />
+  }
+
   return (
     <div
       className={darkMode ? 'dark-theme' : ''}

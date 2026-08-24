@@ -135,7 +135,7 @@ export default function DashboardPage() {
 
   const savedUser = typeof window !== 'undefined' ? localStorage.getItem('user') : null
   const userObj = savedUser ? JSON.parse(savedUser) : null
-  const userName = userObj?.fullName || 'James Davidson'
+  const userName = userObj?.fullName || 'User'
 
   return (
     <div className="dashboard-container page-fade-in">

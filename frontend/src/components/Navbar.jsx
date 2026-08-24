@@ -116,7 +116,11 @@ export default function Navbar({ title, darkMode, onToggleDark }) {
               </Link>
               <div className="navbar-divider" />
               <button
-                onClick={() => { setShowProfileMenu(false); navigate('/login') }}
+                onClick={() => {
+                  localStorage.removeItem('user')
+                  setShowProfileMenu(false)
+                  navigate('/login')
+                }}
                 className="navbar-menu-item logout"
               >
                 <LogOut size={15} /> Sign Out
