@@ -24,6 +24,7 @@ const routeTitles = {
 }
 
 // Layout wrapper for authenticated dashboard routes
+//routes that navigates the differnt pages
 function DashboardLayout({ darkMode, onToggleDark }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const location = useLocation()
