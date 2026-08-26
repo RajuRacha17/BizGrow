@@ -61,7 +61,7 @@ export async function sendResetPasswordEmail(recipientEmail, resetUrl) {
     await transporter.sendMail({
       from: emailFrom,
       to: recipientEmail,
-      subject: 'Reset Your PBIS Password',
+      subject: 'Reset Your BizGrow Password',
       html: htmlContent,
     });
 

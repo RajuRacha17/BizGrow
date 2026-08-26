@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "vite --port 3000 --open",
     "start": "npm run dev",
+    "bizgrow": "cd .. && npm run bizgrow",
     "build": "vite build",
     "preview": "vite preview"
   },
