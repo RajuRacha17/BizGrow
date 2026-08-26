@@ -119,7 +119,7 @@ export default function LoginPage() {
                 />
               </div>
               <div style={{ textAlign: 'right', marginTop: 6 }}>
-                <a href="#forgot" className="login-forgot-link">Forgot password?</a>
+                <Link to="/forgot-password" className="login-forgot-link">Forgot password?</Link>
               </div>
             </div>
 
