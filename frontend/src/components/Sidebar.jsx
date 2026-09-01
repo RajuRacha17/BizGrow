@@ -2,11 +2,17 @@ import React from 'react'
 import { NavLink, Link } from 'react-router-dom'
 import {
   LayoutDashboard,
-  BarChart3,
+  Upload,
+  Cpu,
+  Activity,
+  Zap,
   ShoppingCart,
   Users,
+  Package,
+  BarChart3,
   Sparkles,
   FileText,
+  Bell,
   Settings,
   LogOut,
   TrendingUp,
@@ -17,11 +23,17 @@ import '../styles/Sidebar.css'
 
 const navItems = [
   { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { path: '/sales', label: 'Sales Analysis', icon: ShoppingCart },
+  { path: '/upload', label: 'Data Upload', icon: Upload },
+  { path: '/ai-analysis', label: 'AI Analysis', icon: Cpu, badge: 'AI' },
+  { path: '/health', label: 'Business Health', icon: Activity },
+  { path: '/performance', label: 'Performance', icon: Zap },
+  { path: '/sales', label: 'Sales & Revenue', icon: ShoppingCart },
   { path: '/customers', label: 'Customers', icon: Users },
-  { path: '/ai-recommendations', label: 'AI Recommendations', icon: Sparkles, badge: 'AI' },
+  { path: '/products', label: 'Products', icon: Package },
+  { path: '/benchmarking', label: 'Benchmarking', icon: BarChart3 },
+  { path: '/ai-recommendations', label: 'Recommendations', icon: Sparkles },
   { path: '/reports', label: 'Reports', icon: FileText },
+  { path: '/alerts', label: 'Alerts', icon: Bell },
   { path: '/settings', label: 'Settings', icon: Settings },
 ]
 
@@ -59,7 +71,7 @@ export default function Sidebar({ collapsed, onToggle }) {
       </button>
 
       {/* Navigation Links */}
-      <nav className="sidebar-nav">
+      <nav className="sidebar-nav" style={{ overflowY: 'auto', flex: 1, paddingBottom: 16 }}>
         {!collapsed && (
           <div className="sidebar-section-title">
             Main Menu
@@ -75,8 +87,8 @@ export default function Sidebar({ collapsed, onToggle }) {
               className={({ isActive }) => `sidebar-nav-item ${isActive ? 'active' : ''}`}
               title={collapsed ? item.label : undefined}
             >
-              <Icon size={20} style={{ flexShrink: 0 }} />
-              {!collapsed && <span>{item.label}</span>}
+              <Icon size={18} style={{ flexShrink: 0 }} />
+              {!collapsed && <span style={{ fontSize: 13 }}>{item.label}</span>}
               {!collapsed && item.badge && (
                 <span className="sidebar-badge">{item.badge}</span>
               )}

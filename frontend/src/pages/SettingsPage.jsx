@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Building, Lock, Bell, Key, CreditCard, Save, CheckCircle } from 'lucide-react'
+import { authFetch } from '../utils/api'
 import '../styles/SettingsPage.css'
 
 export default function SettingsPage() {
@@ -15,7 +16,7 @@ export default function SettingsPage() {
   })
 
   React.useEffect(() => {
-    fetch('http://localhost:5000/api/settings')
+    authFetch('http://localhost:5000/api/settings')
       .then((res) => res.json())
       .then((data) => {
         if (data.success && data.profile) {
@@ -37,7 +38,7 @@ export default function SettingsPage() {
     setSaved(true)
 
     try {
-      await fetch('http://localhost:5000/api/settings', {
+      await authFetch('http://localhost:5000/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

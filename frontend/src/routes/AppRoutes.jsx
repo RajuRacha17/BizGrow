@@ -8,25 +8,36 @@ import RegisterPage from '../pages/RegisterPage'
 import ForgotPasswordPage from '../pages/ForgotPasswordPage'
 import ResetPasswordPage from '../pages/ResetPasswordPage'
 import DashboardPage from '../pages/DashboardPage'
-import AnalyticsPage from '../pages/AnalyticsPage'
-import CustomerAnalysisPage from '../pages/CustomerAnalysisPage'
+import DataUploadPage from '../pages/DataUploadPage'
+import AIAnalysisPage from '../pages/AIAnalysisPage'
+import BusinessHealthPage from '../pages/BusinessHealthPage'
+import PerformancePage from '../pages/PerformancePage'
 import SalesAnalysisPage from '../pages/SalesAnalysisPage'
-import ReportsPage from '../pages/ReportsPage'
+import CustomerAnalysisPage from '../pages/CustomerAnalysisPage'
+import ProductsPage from '../pages/ProductsPage'
+import BenchmarkingPage from '../pages/BenchmarkingPage'
 import AIRecommendationsPage from '../pages/AIRecommendationsPage'
+import ReportsPage from '../pages/ReportsPage'
+import AlertsPage from '../pages/AlertsPage'
 import SettingsPage from '../pages/SettingsPage'
 
 const routeTitles = {
   '/dashboard': 'AI Business Analytics Dashboard',
-  '/analytics': 'Deep Dive Analytics',
+  '/upload': 'Data Ingestion & Quality Profiler',
+  '/ai-analysis': 'AI Pattern & Risk Diagnostics',
+  '/health': 'Business Health Index',
+  '/performance': 'Performance & Gap Analysis',
   '/sales': 'Sales Performance & Forecasts',
   '/customers': 'Customer Portfolio & Sentiment',
-  '/ai-recommendations': 'AI Growth Recommendations',
+  '/products': 'Products & Offerings Analysis',
+  '/benchmarking': 'Internal Benchmarking & Gaps',
+  '/ai-recommendations': 'AI Growth Recommendations & Action Plan',
   '/reports': 'Executive Reports & PDF Exporter',
+  '/alerts': 'Real-Time Monitoring & Alerts',
   '/settings': 'System & Business Settings'
 }
 
 // Layout wrapper for authenticated dashboard routes
-//routes that navigates the differnt pages
 function DashboardLayout({ darkMode, onToggleDark }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   const location = useLocation()
@@ -61,11 +72,18 @@ function DashboardLayout({ darkMode, onToggleDark }) {
         <main style={{ flex: 1, overflowY: 'auto' }}>
           <Routes>
             <Route path="/dashboard" element={<DashboardPage />} />
-            <Route path="/analytics" element={<AnalyticsPage />} />
+            <Route path="/upload" element={<DataUploadPage />} />
+            <Route path="/ai-analysis" element={<AIAnalysisPage />} />
+            <Route path="/analytics" element={<Navigate to="/ai-analysis" replace />} />
+            <Route path="/health" element={<BusinessHealthPage />} />
+            <Route path="/performance" element={<PerformancePage />} />
             <Route path="/sales" element={<SalesAnalysisPage />} />
             <Route path="/customers" element={<CustomerAnalysisPage />} />
+            <Route path="/products" element={<ProductsPage />} />
+            <Route path="/benchmarking" element={<BenchmarkingPage />} />
             <Route path="/ai-recommendations" element={<AIRecommendationsPage />} />
             <Route path="/reports" element={<ReportsPage />} />
+            <Route path="/alerts" element={<AlertsPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Routes>
         </main>

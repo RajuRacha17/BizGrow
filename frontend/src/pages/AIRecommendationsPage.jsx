@@ -1,194 +1,142 @@
-import React, { useState } from 'react'
-import { Sparkles, Target, ShoppingBag, Users, Zap, CheckCircle, ArrowRight } from 'lucide-react'
-import '../styles/AIRecommendationsPage.css'
-
-const aiTips = [
-  {
-    id: 1,
-    category: 'Sales Optimization',
-    title: 'Cross-Sell AI Analytics Module to SaaS Pro Customers',
-    impact: 'High Impact (+$14,200/mo)',
-    difficulty: 'Easy (Automated)',
-    desc: 'Machine learning algorithms detected that 42% of active SaaS Pro accounts have expanded data teams. Offering an in-app 14-day preview of the AI Analytics Module will increase conversion by 28%.',
-    icon: Sparkles,
-    color: '#2563EB'
-  },
-  {
-    id: 2,
-    category: 'Customer Engagement',
-    title: 'Launch Automated Re-Engagement for At-Risk SMB Clients',
-    impact: 'High Impact (Save $8,400 CLV)',
-    difficulty: 'Medium',
-    desc: '12 accounts in the SMB tier have logged zero API queries over the last 21 days. Triggering an automated check-in email sequence with a customer success specialist will reduce churn.',
-    icon: Users,
-    color: '#7C3AED'
-  },
-  {
-    id: 3,
-    category: 'Marketing Strategy',
-    title: 'Shift 20% Ad Budget to High-Converting LinkedIn Campaign',
-    impact: 'Medium Impact (+18% Leads)',
-    difficulty: 'Easy',
-    desc: 'LinkedIn Sponsored Content returned a 3.4x higher ROI compared to Google Search Ads over Q2. Reallocating $5,000/mo will reduce Customer Acquisition Cost (CAC) from $240 to $185.',
-    icon: Target,
-    color: '#10B981'
-  },
-  {
-    id: 4,
-    category: 'Inventory & Operations',
-    title: 'Automate Restock Order Trigger for SKU-402',
-    impact: 'High Impact (Prevent Out-of-Stock)',
-    difficulty: 'Automated',
-    desc: 'Current stock velocity indicates SKU-402 inventory will drop below safety threshold in 4 days. Enable auto-reorder to prevent $12,000 in lost revenue during peak weekend.',
-    icon: ShoppingBag,
-    color: '#F59E0B'
-  },
-  {
-    id: 5,
-    category: 'Cost Reduction',
-    title: 'Consolidate Redundant Cloud Compute Clusters',
-    impact: 'Medium Impact (-$2,800/mo)',
-    difficulty: 'Medium',
-    desc: 'Server utilization logs show staging environments running at < 8% CPU load during non-business hours. Enabling auto-scaling scheduled shutdown saves $2,800 monthly.',
-    icon: Zap,
-    color: '#EC4899'
-  }
-]
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Sparkles, CheckCircle2, Clock, AlertCircle, ArrowUpRight, Plus, Upload } from 'lucide-react'
+import { authFetch } from '../utils/api'
+import '../styles/DashboardPage.css'
 
 export default function AIRecommendationsPage() {
-  const [applied, setApplied] = useState([])
   const [recommendations, setRecommendations] = useState([])
+  const [actionItems, setActionItems] = useState([])
+  const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
-  React.useEffect(() => {
-    fetch('http://localhost:5000/api/recommendations')
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.success && data.recommendations) {
-          const formatted = data.recommendations.map((rec) => ({
-            id: rec._id,
-            category: rec.category,
-            title: rec.title,
-            impact: `High Impact (${rec.upside})`,
-            difficulty: rec.priority === 'HIGH' ? 'Easy (Automated)' : 'Medium',
-            desc: rec.description,
-            icon: Sparkles,
-            color: rec.priority === 'HIGH' ? '#2563EB' : rec.priority === 'MEDIUM' ? '#7C3AED' : '#F59E0B',
-            status: rec.status,
-          }))
-          setRecommendations(formatted)
-          const alreadyApplied = data.recommendations
-            .filter((r) => r.status === 'APPLIED')
-            .map((r) => r._id)
-          setApplied(alreadyApplied)
+  const fetchRecommendations = () => {
+    authFetch('http://localhost:5000/api/recommendations')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setRecommendations(data.recommendations || [])
+          setActionItems(data.actionItems || [])
         }
       })
-      .catch((err) => console.log('Recommendations fetch fallback:', err))
+      .catch(err => console.log('Fetch recommendations error:', err))
+      .finally(() => setLoading(false))
+  }
+
+  useEffect(() => {
+    fetchRecommendations()
   }, [])
 
-  const toggleApply = async (id) => {
-    const isDone = applied.includes(id)
-    const newStatus = isDone ? 'ACTIVE' : 'APPLIED'
-
-    if (isDone) {
-      setApplied(applied.filter(item => item !== id))
-    } else {
-      setApplied([...applied, id])
-    }
-
+  const handleUpdateStatus = async (id, newStatus) => {
     try {
-      await fetch(`http://localhost:5000/api/recommendations/${id}`, {
+      await authFetch(`http://localhost:5000/api/recommendations/actions/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ status: newStatus }),
       })
+      fetchRecommendations()
     } catch (err) {
-      console.log('Update recommendation error:', err)
+      console.log('Update action status error:', err)
     }
   }
 
   return (
-    <div className="ai-recommendations-container">
-      {/* Header Banner */}
-      <div className="card ai-recommendations-hero">
+    <div className="dashboard-container page-fade-in" style={{ padding: '24px 32px' }}>
+      <div className="card dashboard-hero-card" style={{ marginBottom: 24 }}>
         <div>
-          <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, background: 'rgba(255,255,255,0.2)', padding: '4px 12px', borderRadius: 20, fontSize: 12, fontWeight: 600, marginBottom: 8 }}>
-            <Sparkles size={14} /> PBIS Recommendation Engine v2.4
+          <div className="badge" style={{ background: 'rgba(124,58,237,0.2)', color: '#A78BFA', border: '1px solid rgba(167,139,250,0.3)', marginBottom: 8 }}>
+            <Sparkles size={12} /> Strategic AI Guidance
           </div>
-          <h2 style={{ fontSize: 24, fontWeight: 700 }}>AI Strategic Growth Advisor</h2>
-          <p style={{ opacity: 0.9, fontSize: 14, marginTop: 4, maxWidth: 600 }}>
-            Personalized actionable recommendations generated specifically for your business model using machine learning pattern matching.
+          <h2 style={{ fontSize: 24, fontWeight: 700 }}>Personalized Growth Recommendations</h2>
+          <p style={{ color: '#94A3B8', fontSize: 14, marginTop: 4 }}>
+            Data-backed strategic recommendations and interactive Priority Action Plan.
           </p>
-        </div>
-
-        <div style={{ textAlign: 'right', background: 'rgba(255,255,255,0.1)', padding: '16px 24px', borderRadius: 16 }}>
-          <div style={{ fontSize: 28, fontWeight: 800 }}>+$25,400/mo</div>
-          <div style={{ fontSize: 12, opacity: 0.9 }}>Potential Monthly Upside</div>
         </div>
       </div>
 
-      {/* Cards List */}
-      <div className="ai-cards-list">
-        {(recommendations.length > 0 ? recommendations : aiTips).map(tip => {
-          const Icon = tip.icon
-          const isDone = applied.includes(tip.id)
-
-          return (
-            <div
-              key={tip.id}
-              className="card card-hover"
-              style={{
-                padding: 24,
-                display: 'flex',
-                gap: 20,
-                alignItems: 'flex-start',
-                borderLeft: `4px solid ${tip.color}`
-              }}
-            >
-              <div
-                style={{
-                  width: 48,
-                  height: 48,
-                  borderRadius: 14,
-                  backgroundColor: `${tip.color}15`,
-                  color: tip.color,
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexShrink: 0
-                }}
-              >
-                <Icon size={24} />
-              </div>
-
-              <div style={{ flex: 1 }}>
-                <div style={{ display: 'flex', gap: 10, alignItems: 'center', marginBottom: 6 }}>
-                  <span className="badge badge-info" style={{ background: '#F1F5F9', color: 'var(--text-muted)' }}>{tip.category}</span>
-                  <span className="badge badge-success">{tip.impact}</span>
-                  <span style={{ fontSize: 12, color: 'var(--text-light)' }}>Difficulty: {tip.difficulty}</span>
+      {/* Strategic Recommendations Grid */}
+      <div style={{ marginBottom: 32 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>AI Generated Recommendations</h3>
+        {recommendations.length === 0 ? (
+          <div className="card" style={{ padding: 32, textAlign: 'center' }}>
+            <p style={{ fontSize: 14, color: 'var(--text-muted)' }}>No recommendations generated yet. Please upload a dataset first.</p>
+            <button className="btn-primary" onClick={() => navigate('/upload')} style={{ marginTop: 12, padding: '10px 20px' }}>
+              <Upload size={16} /> Upload Dataset
+            </button>
+          </div>
+        ) : (
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
+            {recommendations.map((rec, idx) => (
+              <div key={idx} className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
+                <div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
+                    <span className="badge badge-info" style={{ background: '#2563EB15', color: '#2563EB' }}>{rec.category}</span>
+                    <span className="badge badge-info" style={{ background: '#10B98115', color: '#10B981', fontWeight: 700 }}>{rec.upside}</span>
+                  </div>
+                  <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>{rec.title}</h4>
+                  <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: 12 }}>{rec.recommendedAction}</p>
                 </div>
-
-                <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 8, color: 'var(--text-main)' }}>
-                  {tip.title}
-                </h3>
-                <p style={{ fontSize: 14, color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: 16 }}>
-                  {tip.desc}
-                </p>
-
-                <button
-                  className={isDone ? 'btn-secondary' : 'btn-primary'}
-                  onClick={() => toggleApply(tip.id)}
-                  style={{ fontSize: 13, padding: '8px 16px' }}
-                >
-                  {isDone ? (
-                    <><CheckCircle size={15} color="#10B981" /> Recommendation Applied</>
-                  ) : (
-                    <>Apply Recommendation <ArrowRight size={15} /></>
-                  )}
-                </button>
+                <div style={{ paddingTop: 12, borderTop: '1px solid var(--border)', fontSize: 12, color: 'var(--text-muted)' }}>
+                  <strong>Evidence:</strong> {rec.evidence}
+                </div>
               </div>
-            </div>
-          )
-        })}
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Priority Action Plan */}
+      <div className="card" style={{ padding: 24 }}>
+        <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>Priority Action Plan (Interactive)</h3>
+        {actionItems.length === 0 ? (
+          <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>No action plan items recorded yet.</p>
+        ) : (
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid var(--border)', textAlign: 'left' }}>
+                  <th style={{ padding: '10px 14px' }}>Action Item</th>
+                  <th style={{ padding: '10px 14px' }}>Priority</th>
+                  <th style={{ padding: '10px 14px' }}>Due Date</th>
+                  <th style={{ padding: '10px 14px' }}>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {actionItems.map((item) => (
+                  <tr key={item._id} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <td style={{ padding: '10px 14px', fontWeight: 600 }}>{item.title}</td>
+                    <td style={{ padding: '10px 14px' }}>
+                      <span className="badge badge-info" style={{ background: item.priority === 'HIGH' ? '#EF444415' : '#F59E0B15', color: item.priority === 'HIGH' ? '#EF4444' : '#F59E0B' }}>
+                        {item.priority}
+                      </span>
+                    </td>
+                    <td style={{ padding: '10px 14px', color: 'var(--text-muted)' }}>{item.dueDate}</td>
+                    <td style={{ padding: '10px 14px' }}>
+                      <select
+                        value={item.status}
+                        onChange={(e) => handleUpdateStatus(item._id, e.target.value)}
+                        style={{
+                          padding: '6px 12px',
+                          borderRadius: 6,
+                          border: '1px solid var(--border)',
+                          backgroundColor: item.status === 'COMPLETED' ? '#dcfce7' : item.status === 'IN_PROGRESS' ? '#dbeafe' : 'var(--bg)',
+                          color: item.status === 'COMPLETED' ? '#166534' : item.status === 'IN_PROGRESS' ? '#1e40af' : 'var(--text-main)',
+                          fontWeight: 600,
+                          fontSize: 12,
+                          cursor: 'pointer'
+                        }}
+                      >
+                        <option value="PENDING">Pending</option>
+                        <option value="IN_PROGRESS">In Progress</option>
+                        <option value="COMPLETED">Completed</option>
+                      </select>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </div>
     </div>
   )

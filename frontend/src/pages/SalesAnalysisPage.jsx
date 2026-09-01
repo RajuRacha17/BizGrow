@@ -1,89 +1,94 @@
-import React from 'react'
-import { ResponsiveContainer, AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip } from 'recharts'
-import '../styles/SalesAnalysisPage.css'
-
-const forecastData = [
-  { month: 'Aug (Est)', actual: 128450, forecast: 135000 },
-  { month: 'Sep (Est)', actual: null, forecast: 142000 },
-  { month: 'Oct (Est)', actual: null, forecast: 154000 },
-  { month: 'Nov (Est)', actual: null, forecast: 168000 },
-  { month: 'Dec (Est)', actual: null, forecast: 185000 },
-]
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { ShoppingCart, Calendar, Filter, Upload } from 'lucide-react'
+import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, BarChart, Bar } from 'recharts'
+import { authFetch } from '../utils/api'
+import '../styles/DashboardPage.css'
 
 export default function SalesAnalysisPage() {
+  const [analysis, setAnalysis] = useState(null)
+  const [timeFilter, setTimeFilter] = useState('ALL')
+  const navigate = useNavigate()
+
+  useEffect(() => {
+    authFetch('http://localhost:5000/api/dashboard/summary')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.analysis) {
+          setAnalysis(data.analysis)
+        }
+      })
+      .catch(err => console.log('Sales fetch error:', err))
+  }, [])
+
+  if (!analysis || !analysis.summary) {
+    return (
+      <div className="dashboard-container page-fade-in" style={{ padding: '24px 32px' }}>
+        <div className="card" style={{ padding: 48, textAlign: 'center' }}>
+          <ShoppingCart size={36} color="var(--primary)" style={{ marginBottom: 16 }} />
+          <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Sales Data Unavailable</h3>
+          <p style={{ fontSize: 14, color: 'var(--text-muted)', marginBottom: 24 }}>Upload your business dataset to calculate sales trends and regional breakdowns.</p>
+          <button className="btn-primary" onClick={() => navigate('/upload')} style={{ padding: '12px 24px' }}>
+            <Upload size={16} /> Upload Business Data
+          </button>
+        </div>
+      </div>
+    )
+  }
+
+  const { summary, salesData, regionalPerformance } = analysis
+  const filteredSalesData = timeFilter === '30' ? salesData.slice(-1) : timeFilter === '90' ? salesData.slice(-3) : salesData
+
   return (
-    <div className="sales-page-container">
-      {/* Top Overview Cards */}
-      <div className="sales-overview-grid">
-        <div className="card" style={{ padding: 20 }}>
-          <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Best Performing Product</div>
-          <h3 style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>PBIS Enterprise Suite</h3>
-          <p style={{ fontSize: 12, color: 'var(--success)', marginTop: 4 }}>Generates 45% of total revenue ($57,800/mo)</p>
+    <div className="dashboard-container page-fade-in" style={{ padding: '24px 32px' }}>
+      <div className="card dashboard-hero-card" style={{ marginBottom: 24 }}>
+        <div>
+          <div className="badge" style={{ background: 'rgba(37,99,235,0.3)', color: '#60A5FA', border: '1px solid rgba(96,165,250,0.3)', marginBottom: 8 }}>
+            <ShoppingCart size={12} /> Financial Analytics
+          </div>
+          <h2 style={{ fontSize: 24, fontWeight: 700 }}>Sales & Revenue Analysis</h2>
+          <p style={{ color: '#94A3B8', fontSize: 14, marginTop: 4 }}>
+            Revenue streams, order volume, average order values, and geographical performance.
+          </p>
         </div>
 
-        <div className="card" style={{ padding: 20 }}>
-          <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Sales Velocity Rate</div>
-          <h3 style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>14.2 Days Deal Cycle</h3>
-          <p style={{ fontSize: 12, color: 'var(--primary)', marginTop: 4 }}>-3 days faster than industry benchmark</p>
-        </div>
-
-        <div className="card" style={{ padding: 20 }}>
-          <div style={{ fontSize: 13, color: 'var(--text-muted)' }}>Q4 Revenue Forecast</div>
-          <h3 style={{ fontSize: 22, fontWeight: 700, marginTop: 4 }}>$507,000 Est.</h3>
-          <p style={{ fontSize: 12, color: 'var(--secondary)', marginTop: 4 }}>96.4% confidence score based on AI model</p>
+        {/* Date Filters */}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {['7', '30', '90', 'ALL'].map((f) => (
+            <button
+              key={f}
+              onClick={() => setTimeFilter(f)}
+              className="btn-primary"
+              style={{
+                fontSize: 12,
+                padding: '6px 12px',
+                background: timeFilter === f ? 'var(--primary)' : 'rgba(255,255,255,0.05)',
+                color: timeFilter === f ? '#FFF' : 'var(--text-muted)',
+                border: '1px solid var(--border)'
+              }}
+            >
+              {f === 'ALL' ? 'All Time' : `Last ${f} Days`}
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Forecast Chart */}
-      <div className="card" style={{ padding: 24 }}>
-        <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 4 }}>Predictive 5-Month Revenue Forecast</h3>
-        <p style={{ fontSize: 12, color: 'var(--text-muted)', marginBottom: 20 }}>AI-generated trend prediction based on pipeline deal velocity</p>
-
-        <div style={{ width: '100%', height: 300 }}>
+      {/* Chart Section */}
+      <div className="card" style={{ padding: 24, marginBottom: 24 }}>
+        <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Filtered Sales & Revenue Trajectory</h3>
+        <div style={{ width: '100%', height: 320 }}>
           <ResponsiveContainer>
-            <AreaChart data={forecastData}>
+            <LineChart data={filteredSalesData}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
               <XAxis dataKey="month" stroke="var(--text-light)" fontSize={12} />
               <YAxis stroke="var(--text-light)" fontSize={12} />
-              <Tooltip />
-              <Area type="monotone" dataKey="forecast" stroke="#7C3AED" fill="rgba(124, 58, 237, 0.15)" strokeWidth={3} name="AI Projected Revenue ($)" />
-            </AreaChart>
+              <Tooltip contentStyle={{ backgroundColor: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--border)' }} />
+              <Legend />
+              <Line type="monotone" dataKey="revenue" stroke="#2563EB" strokeWidth={3} name="Revenue ($)" dot={{ r: 4 }} />
+              <Line type="monotone" dataKey="profit" stroke="#10B981" strokeWidth={2} name="Profit ($)" />
+            </LineChart>
           </ResponsiveContainer>
         </div>
-      </div>
-
-      {/* Product Ranking Grid */}
-      <div className="card" style={{ padding: 24 }}>
-        <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Top Product Ranking & Margins</h3>
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Rank</th>
-              <th>Product Name</th>
-              <th>Units Sold</th>
-              <th>Gross Revenue</th>
-              <th>Gross Margin</th>
-              <th>Trend</th>
-            </tr>
-          </thead>
-          <tbody>
-            {[
-              { rank: 1, name: 'PBIS Enterprise Suite', units: '340 Units', rev: '$57,800', margin: '78%', trend: '+18.4%' },
-              { rank: 2, name: 'AI Insights Addon Module', units: '610 Units', rev: '$32,100', margin: '92%', trend: '+34.2%' },
-              { rank: 3, name: 'Custom API Tier Solution', units: '120 Units', rev: '$23,050', margin: '65%', trend: '+6.1%' },
-              { rank: 4, name: 'Small Business Starter Package', units: '450 Units', rev: '$15,500', margin: '70%', trend: '+4.0%' }
-            ].map(p => (
-              <tr key={p.rank}>
-                <td style={{ fontWeight: 700 }}>#{p.rank}</td>
-                <td style={{ fontWeight: 600 }}>{p.name}</td>
-                <td>{p.units}</td>
-                <td style={{ fontWeight: 700 }}>{p.rev}</td>
-                <td><span className="badge badge-success">{p.margin}</span></td>
-                <td style={{ color: '#10B981', fontWeight: 600 }}>{p.trend}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
       </div>
     </div>
   )

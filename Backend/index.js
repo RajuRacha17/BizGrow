@@ -12,6 +12,7 @@ import recommendationRoutes from './routes/recommendationRoutes.js';
 import reportRoutes from './routes/reportRoutes.js';
 import settingsRoutes from './routes/settingsRoutes.js';
 import dataRoutes from './routes/dataRoutes.js';
+import alertRoutes from './routes/alertRoutes.js';
 
 dns.setDefaultResultOrder('ipv4first');
 try {
@@ -38,6 +39,7 @@ app.use('/api/recommendations', recommendationRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/settings', settingsRoutes);
 app.use('/api/data', dataRoutes);
+app.use('/api/alerts', alertRoutes);
 
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend is running', timestamp: new Date() });

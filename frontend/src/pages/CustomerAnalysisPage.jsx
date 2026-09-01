@@ -1,115 +1,105 @@
-import React, { useState } from 'react'
-import { Search, UserCheck, Heart, UserX, Star } from 'lucide-react'
-import '../styles/CustomerAnalysisPage.css'
-
-const customerList = [
-  { id: 'CUST-001', name: 'Acme Corporation', contact: 'Sarah Jenkins', segment: 'Enterprise', clv: '$48,500', sentiment: 'Positive (98%)', status: 'Active' },
-  { id: 'CUST-002', name: 'Global Logistics Ltd', contact: 'Michael Chang', segment: 'Mid-Market', clv: '$24,200', sentiment: 'Positive (92%)', status: 'Active' },
-  { id: 'CUST-003', name: 'Innovate Tech', contact: 'Alex Rivera', segment: 'Enterprise', clv: '$62,000', sentiment: 'Neutral (74%)', status: 'Needs Review' },
-  { id: 'CUST-004', name: 'Nexus Solutions', contact: 'David Kim', segment: 'SMB', clv: '$8,400', sentiment: 'Positive (88%)', status: 'Active' },
-  { id: 'CUST-005', name: 'Apex Media Group', contact: 'Elena Rostova', segment: 'Mid-Market', clv: '$18,900', sentiment: 'Negative (42%)', status: 'At Risk' },
-]
+import React, { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { Users, AlertTriangle, UserCheck, ShieldAlert, Upload } from 'lucide-react'
+import { authFetch } from '../utils/api'
+import '../styles/DashboardPage.css'
 
 export default function CustomerAnalysisPage() {
-  const [searchTerm, setSearchTerm] = useState('')
+  const [customerData, setCustomerData] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const navigate = useNavigate()
 
-  const filteredCustomers = customerList.filter(c =>
-    c.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    c.contact.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  useEffect(() => {
+    authFetch('http://localhost:5000/api/customers/overview')
+      .then(res => res.json())
+      .then(data => {
+        if (data.success && data.customerData) {
+          setCustomerData(data.customerData)
+        }
+      })
+      .catch(err => console.log('Fetch customers error:', err))
+      .finally(() => setLoading(false))
+  }, [])
+
+  if (!customerData || !customerData.available) {
+    return (
+      <div className="dashboard-container page-fade-in" style={{ padding: '24px 32px' }}>
+        <div className="card" style={{ padding: 48, textAlign: 'center' }}>
+          <Users size={36} color="var(--primary)" style={{ marginBottom: 16 }} />
+          <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>Customer Analysis Unavailable</h3>
+          <p style={{ fontSize: 14, color: 'var(--text-muted)', maxWidth: 520, margin: '0 auto 24px', lineHeight: 1.6 }}>
+            {customerData?.message || 'Customer identifier column (e.g. Customer ID or Client Name) was not detected in the uploaded dataset.'}
+          </p>
+          <button className="btn-primary" onClick={() => navigate('/upload')} style={{ padding: '12px 24px' }}>
+            <Upload size={16} /> Upload Dataset with Customer Identifiers
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="customer-page-container">
-      {/* Top Metrics Row */}
-      <div className="customer-kpi-grid">
-        <div className="card" style={{ padding: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>Customer Retention Rate</span>
-            <UserCheck size={20} color="#10B981" />
+    <div className="dashboard-container page-fade-in" style={{ padding: '24px 32px' }}>
+      <div className="card dashboard-hero-card" style={{ marginBottom: 24 }}>
+        <div>
+          <div className="badge" style={{ background: 'rgba(16,185,129,0.2)', color: '#34D399', border: '1px solid rgba(52,211,153,0.3)', marginBottom: 8 }}>
+            <Users size={12} /> RFM Customer Segmentation
           </div>
-          <div style={{ fontSize: 26, fontWeight: 700, marginTop: 4 }}>94.2%</div>
-          <span className="badge badge-success" style={{ marginTop: 6 }}>+2.1% this quarter</span>
-        </div>
-
-        <div className="card" style={{ padding: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>Customer Satisfaction (CSAT)</span>
-            <Heart size={20} color="#EC4899" />
-          </div>
-          <div style={{ fontSize: 26, fontWeight: 700, marginTop: 4 }}>4.8 / 5.0</div>
-          <span className="badge badge-success" style={{ marginTop: 6 }}>Based on 420 reviews</span>
-        </div>
-
-        <div className="card" style={{ padding: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>At-Risk Accounts</span>
-            <UserX size={20} color="#EF4444" />
-          </div>
-          <div style={{ fontSize: 26, fontWeight: 700, marginTop: 4 }}>12 Accounts</div>
-          <span className="badge badge-danger" style={{ marginTop: 6 }}>Requires Action</span>
-        </div>
-
-        <div className="card" style={{ padding: 20 }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: 13, color: 'var(--text-muted)' }}>Avg Customer Lifetime Value</span>
-            <Star size={20} color="#F59E0B" />
-          </div>
-          <div style={{ fontSize: 26, fontWeight: 700, marginTop: 4 }}>$32,400</div>
-          <span className="badge badge-info" style={{ marginTop: 6 }}>+14% YoY</span>
+          <h2 style={{ fontSize: 24, fontWeight: 700 }}>Customer Portfolio Analysis</h2>
+          <p style={{ color: '#94A3B8', fontSize: 14, marginTop: 4 }}>
+            Customer spend behavior, RFM cohort segmentation, and retention risk tracking.
+          </p>
         </div>
       </div>
 
-      {/* Customer Data Table */}
-      <div className="card" style={{ padding: 24 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
-          <div>
-            <h3 style={{ fontSize: 16, fontWeight: 700 }}>Key Account Portfolio</h3>
-            <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Segment analysis, CLV projections, and AI sentiment rating</p>
-          </div>
+      {/* KPI Cards */}
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: 20, marginBottom: 24 }}>
+        <div className="card" style={{ padding: 20 }}>
+          <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Total Customers</span>
+          <h3 style={{ fontSize: 24, fontWeight: 700, margin: '4px 0', color: '#2563EB' }}>{customerData.totalCustomers}</h3>
+        </div>
+        <div className="card" style={{ padding: 20 }}>
+          <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Repeat Customer Rate</span>
+          <h3 style={{ fontSize: 24, fontWeight: 700, margin: '4px 0', color: '#10B981' }}>{customerData.retentionRate}</h3>
+        </div>
+        <div className="card" style={{ padding: 20 }}>
+          <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Avg Customer Value</span>
+          <h3 style={{ fontSize: 24, fontWeight: 700, margin: '4px 0', color: '#7C3AED' }}>${customerData.avgCustomerValue?.toLocaleString()}</h3>
+        </div>
+      </div>
 
-          <div style={{ position: 'relative', width: 240 }}>
-            <Search size={15} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-light)' }} />
-            <input
-              className="input-field"
-              placeholder="Search client accounts..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              style={{ paddingLeft: 36, height: 36, fontSize: 13 }}
-            />
+      {/* Churn Risk Cohorts Table */}
+      {customerData.churnRisks && customerData.churnRisks.length > 0 && (
+        <div className="card" style={{ padding: 24 }}>
+          <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>At-Risk Accounts Tracking</h3>
+          <div style={{ overflowX: 'auto' }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
+              <thead>
+                <tr style={{ borderBottom: '2px solid var(--border)', textAlign: 'left' }}>
+                  <th style={{ padding: '10px 14px' }}>Customer Name</th>
+                  <th style={{ padding: '10px 14px' }}>Risk Level</th>
+                  <th style={{ padding: '10px 14px' }}>Total Spend</th>
+                  <th style={{ padding: '10px 14px' }}>Detection Reason</th>
+                </tr>
+              </thead>
+              <tbody>
+                {customerData.churnRisks.map((c) => (
+                  <tr key={c.id} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <td style={{ padding: '10px 14px', fontWeight: 600 }}>{c.name}</td>
+                    <td style={{ padding: '10px 14px' }}>
+                      <span className="badge badge-info" style={{ background: c.riskLevel === 'HIGH' ? '#EF444415' : '#F59E0B15', color: c.riskLevel === 'HIGH' ? '#EF4444' : '#F59E0B' }}>
+                        {c.riskLevel}
+                      </span>
+                    </td>
+                    <td style={{ padding: '10px 14px', fontWeight: 600 }}>{c.spend}</td>
+                    <td style={{ padding: '10px 14px', color: 'var(--text-muted)' }}>{c.reason}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         </div>
-
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Account ID</th>
-              <th>Company Name</th>
-              <th>Primary Contact</th>
-              <th>Segment</th>
-              <th>Projected CLV</th>
-              <th>AI Sentiment Score</th>
-              <th>Status</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCustomers.map(cust => (
-              <tr key={cust.id}>
-                <td style={{ fontWeight: 600, color: 'var(--primary)' }}>{cust.id}</td>
-                <td style={{ fontWeight: 600 }}>{cust.name}</td>
-                <td>{cust.contact}</td>
-                <td><span className="badge badge-info">{cust.segment}</span></td>
-                <td style={{ fontWeight: 700 }}>{cust.clv}</td>
-                <td>{cust.sentiment}</td>
-                <td>
-                  <span className={`badge ${cust.status === 'Active' ? 'badge-success' : cust.status === 'Needs Review' ? 'badge-warning' : 'badge-danger'}`}>
-                    {cust.status}
-                  </span>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      )}
     </div>
   )
 }
