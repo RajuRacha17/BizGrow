@@ -42,4 +42,28 @@ router.get('/forecast', async (req, res) => {
   }
 });
 
+// GET /api/analytics/ml-analysis
+router.get('/ml-analysis', async (req, res) => {
+  try {
+    const userId = getUserId(req);
+    const analysis = await Analysis.findOne({ userId }).sort({ createdAt: -1 });
+
+    if (!analysis || !analysis.mlAnalysis) {
+      return res.json({ success: true, available: false, message: 'No ML analytical data calculated yet.' });
+    }
+
+    res.json({
+      success: true,
+      available: true,
+      mlAnalysis: analysis.mlAnalysis,
+      summary: analysis.summary,
+      customerData: analysis.customerData,
+      forecastData: analysis.forecastData,
+      datasetName: analysis.datasetName
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, message: error.message });
+  }
+});
+
 export default router;

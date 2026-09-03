@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Sparkles, CheckCircle2, Clock, AlertCircle, ArrowUpRight, Plus, Upload } from 'lucide-react'
+import { Sparkles, CheckCircle2, Clock, AlertCircle, ArrowUpRight, ChevronDown, ChevronUp, Upload } from 'lucide-react'
 import { authFetch } from '../utils/api'
 import '../styles/DashboardPage.css'
 
 export default function AIRecommendationsPage() {
   const [recommendations, setRecommendations] = useState([])
   const [actionItems, setActionItems] = useState([])
+  const [expandedIndex, setExpandedIndex] = useState(0) // Default first card expanded
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
 
@@ -45,42 +46,77 @@ export default function AIRecommendationsPage() {
       <div className="card dashboard-hero-card" style={{ marginBottom: 24 }}>
         <div>
           <div className="badge" style={{ background: 'rgba(124,58,237,0.2)', color: '#A78BFA', border: '1px solid rgba(167,139,250,0.3)', marginBottom: 8 }}>
-            <Sparkles size={12} /> Strategic AI Guidance
+            <Sparkles size={12} /> Strategic Business Guidance
           </div>
           <h2 style={{ fontSize: 24, fontWeight: 700 }}>Personalized Growth Recommendations</h2>
           <p style={{ color: '#94A3B8', fontSize: 14, marginTop: 4 }}>
-            Data-backed strategic recommendations and interactive Priority Action Plan.
+            Actionable recommendations and interactive Priority Action Plan based on your uploaded business data.
           </p>
         </div>
       </div>
 
-      {/* Strategic Recommendations Grid */}
+      {/* Strategic Recommendations Cards */}
       <div style={{ marginBottom: 32 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>AI Generated Recommendations</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>Recommendations & Insights</h3>
         {recommendations.length === 0 ? (
           <div className="card" style={{ padding: 32, textAlign: 'center' }}>
-            <p style={{ fontSize: 14, color: 'var(--text-muted)' }}>No recommendations generated yet. Please upload a dataset first.</p>
+            <p style={{ fontSize: 14, color: 'var(--text-muted)' }}>No recommendations generated yet. Please upload a business dataset first.</p>
             <button className="btn-primary" onClick={() => navigate('/upload')} style={{ marginTop: 12, padding: '10px 20px' }}>
-              <Upload size={16} /> Upload Dataset
+              <Upload size={16} /> Upload Business Data
             </button>
           </div>
         ) : (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: 20 }}>
-            {recommendations.map((rec, idx) => (
-              <div key={idx} className="card" style={{ padding: 20, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
-                    <span className="badge badge-info" style={{ background: '#2563EB15', color: '#2563EB' }}>{rec.category}</span>
-                    <span className="badge badge-info" style={{ background: '#10B98115', color: '#10B981', fontWeight: 700 }}>{rec.upside}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+            {recommendations.map((rec, idx) => {
+              const isExpanded = expandedIndex === idx
+
+              return (
+                <div key={idx} className="card" style={{ padding: 24, border: isExpanded ? '1px solid var(--primary)' : '1px solid var(--border)' }}>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', cursor: 'pointer' }} onClick={() => setExpandedIndex(isExpanded ? null : idx)}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+                      <span className="badge badge-info" style={{ background: rec.priority === 'HIGH' ? '#EF444415' : '#F59E0B15', color: rec.priority === 'HIGH' ? '#EF4444' : '#F59E0B', fontWeight: 700 }}>
+                        {rec.priority === 'HIGH' ? '🔴 HIGH PRIORITY' : rec.priority === 'MEDIUM' ? '🟠 MEDIUM PRIORITY' : '🟢 LOW PRIORITY'}
+                      </span>
+                      <h4 style={{ fontSize: 16, fontWeight: 700 }}>{rec.title}</h4>
+                    </div>
+
+                    <button className="btn-secondary" style={{ fontSize: 12, padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 4 }}>
+                      {isExpanded ? <>Hide Details <ChevronUp size={14} /></> : <>View Details <ChevronDown size={14} /></>}
+                    </button>
                   </div>
-                  <h4 style={{ fontSize: 16, fontWeight: 700, marginBottom: 8 }}>{rec.title}</h4>
-                  <p style={{ fontSize: 13, color: 'var(--text-muted)', lineHeight: 1.5, marginBottom: 12 }}>{rec.recommendedAction}</p>
+
+                  {isExpanded && (
+                    <div style={{ marginTop: 20, paddingTop: 16, borderTop: '1px solid var(--border)', display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 16 }}>
+                      {/* WHAT WE FOUND */}
+                      <div style={{ padding: 12, borderRadius: 8, backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>WHAT WE FOUND</span>
+                        <p style={{ fontSize: 13, color: 'var(--text-main)', margin: '4px 0 0', lineHeight: 1.4 }}>{rec.problem}</p>
+                      </div>
+
+                      {/* WHY IT MATTERS */}
+                      <div style={{ padding: 12, borderRadius: 8, backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>WHY IT MATTERS</span>
+                        <p style={{ fontSize: 13, color: 'var(--text-main)', margin: '4px 0 0', lineHeight: 1.4 }}>{rec.evidence}</p>
+                      </div>
+
+                      {/* POSSIBLE REASON */}
+                      <div style={{ padding: 12, borderRadius: 8, backgroundColor: 'var(--bg)', border: '1px solid var(--border)' }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>POSSIBLE REASON</span>
+                        <p style={{ fontSize: 13, color: 'var(--text-main)', margin: '4px 0 0', lineHeight: 1.4 }}>
+                          The uploaded data suggests operational overheads or demand shifts may be contributing to this trend.
+                        </p>
+                      </div>
+
+                      {/* WHAT YOU CAN DO */}
+                      <div style={{ padding: 12, borderRadius: 8, backgroundColor: 'rgba(37,99,235,0.05)', border: '1px solid rgba(37,99,235,0.2)' }}>
+                        <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase' }}>WHAT YOU CAN DO</span>
+                        <p style={{ fontSize: 13, color: 'var(--text-main)', fontWeight: 600, margin: '4px 0 0', lineHeight: 1.4 }}>{rec.recommendedAction}</p>
+                      </div>
+                    </div>
+                  )}
                 </div>
-                <div style={{ paddingTop: 12, borderTop: '1px solid var(--border)', fontSize: 12, color: 'var(--text-muted)' }}>
-                  <strong>Evidence:</strong> {rec.evidence}
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </div>
         )}
       </div>
@@ -95,15 +131,17 @@ export default function AIRecommendationsPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border)', textAlign: 'left' }}>
+                  <th style={{ padding: '10px 14px' }}>#</th>
                   <th style={{ padding: '10px 14px' }}>Action Item</th>
                   <th style={{ padding: '10px 14px' }}>Priority</th>
-                  <th style={{ padding: '10px 14px' }}>Due Date</th>
+                  <th style={{ padding: '10px 14px' }}>Timeline</th>
                   <th style={{ padding: '10px 14px' }}>Status</th>
                 </tr>
               </thead>
               <tbody>
-                {actionItems.map((item) => (
+                {actionItems.map((item, idx) => (
                   <tr key={item._id} style={{ borderBottom: '1px solid var(--border)' }}>
+                    <td style={{ padding: '10px 14px', fontWeight: 700, color: 'var(--text-muted)' }}>{idx + 1}</td>
                     <td style={{ padding: '10px 14px', fontWeight: 600 }}>{item.title}</td>
                     <td style={{ padding: '10px 14px' }}>
                       <span className="badge badge-info" style={{ background: item.priority === 'HIGH' ? '#EF444415' : '#F59E0B15', color: item.priority === 'HIGH' ? '#EF4444' : '#F59E0B' }}>

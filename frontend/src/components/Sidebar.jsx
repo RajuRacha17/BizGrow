@@ -6,10 +6,6 @@ import {
   Cpu,
   Activity,
   Zap,
-  ShoppingCart,
-  Users,
-  Package,
-  BarChart3,
   Sparkles,
   FileText,
   Bell,
@@ -27,10 +23,6 @@ const navItems = [
   { path: '/ai-analysis', label: 'AI Analysis', icon: Cpu, badge: 'AI' },
   { path: '/health', label: 'Business Health', icon: Activity },
   { path: '/performance', label: 'Performance', icon: Zap },
-  { path: '/sales', label: 'Sales & Revenue', icon: ShoppingCart },
-  { path: '/customers', label: 'Customers', icon: Users },
-  { path: '/products', label: 'Products', icon: Package },
-  { path: '/benchmarking', label: 'Benchmarking', icon: BarChart3 },
   { path: '/ai-recommendations', label: 'Recommendations', icon: Sparkles },
   { path: '/reports', label: 'Reports', icon: FileText },
   { path: '/alerts', label: 'Alerts', icon: Bell },
@@ -46,9 +38,9 @@ export default function Sidebar({ collapsed, onToggle }) {
   return (
     <aside className={`sidebar-container ${collapsed ? 'sidebar-collapsed' : 'sidebar-expanded'}`}>
       {/* Brand Header */}
-      <Link
-        to="/"
+      <div
         className={`sidebar-header ${collapsed ? 'sidebar-header-center' : 'sidebar-header-start'}`}
+        style={{ cursor: 'default' }}
       >
         <div className="sidebar-brand-icon gradient-bg">
           <TrendingUp size={20} />
@@ -63,7 +55,7 @@ export default function Sidebar({ collapsed, onToggle }) {
             </p>
           </div>
         )}
-      </Link>
+      </div>
 
       {/* Collapse Toggle Button */}
       <button className="sidebar-toggle-btn" onClick={onToggle} title={collapsed ? "Expand Sidebar" : "Collapse Sidebar"}>

@@ -45,9 +45,9 @@ export default function AlertsPage() {
           <div className="badge" style={{ background: 'rgba(239,68,68,0.2)', color: '#FCA5A5', border: '1px solid rgba(252,165,165,0.3)', marginBottom: 8 }}>
             <Bell size={12} /> Real-Time Monitoring
           </div>
-          <h2 style={{ fontSize: 24, fontWeight: 700 }}>System Alerts & Notifications</h2>
+          <h2 style={{ fontSize: 24, fontWeight: 700 }}>Alerts & Business Notifications</h2>
           <p style={{ color: '#94A3B8', fontSize: 14, marginTop: 4 }}>
-            Automated notifications triggered by revenue declines, margin contractions, and data quality issues.
+            Notifications triggered when revenue trends, profit margins, or dataset uploads require your attention.
           </p>
         </div>
       </div>

@@ -12,10 +12,6 @@ import DataUploadPage from '../pages/DataUploadPage'
 import AIAnalysisPage from '../pages/AIAnalysisPage'
 import BusinessHealthPage from '../pages/BusinessHealthPage'
 import PerformancePage from '../pages/PerformancePage'
-import SalesAnalysisPage from '../pages/SalesAnalysisPage'
-import CustomerAnalysisPage from '../pages/CustomerAnalysisPage'
-import ProductsPage from '../pages/ProductsPage'
-import BenchmarkingPage from '../pages/BenchmarkingPage'
 import AIRecommendationsPage from '../pages/AIRecommendationsPage'
 import ReportsPage from '../pages/ReportsPage'
 import AlertsPage from '../pages/AlertsPage'
@@ -27,10 +23,6 @@ const routeTitles = {
   '/ai-analysis': 'AI Pattern & Risk Diagnostics',
   '/health': 'Business Health Index',
   '/performance': 'Performance & Gap Analysis',
-  '/sales': 'Sales Performance & Forecasts',
-  '/customers': 'Customer Portfolio & Sentiment',
-  '/products': 'Products & Offerings Analysis',
-  '/benchmarking': 'Internal Benchmarking & Gaps',
   '/ai-recommendations': 'AI Growth Recommendations & Action Plan',
   '/reports': 'Executive Reports & PDF Exporter',
   '/alerts': 'Real-Time Monitoring & Alerts',
@@ -77,10 +69,6 @@ function DashboardLayout({ darkMode, onToggleDark }) {
             <Route path="/analytics" element={<Navigate to="/ai-analysis" replace />} />
             <Route path="/health" element={<BusinessHealthPage />} />
             <Route path="/performance" element={<PerformancePage />} />
-            <Route path="/sales" element={<SalesAnalysisPage />} />
-            <Route path="/customers" element={<CustomerAnalysisPage />} />
-            <Route path="/products" element={<ProductsPage />} />
-            <Route path="/benchmarking" element={<BenchmarkingPage />} />
             <Route path="/ai-recommendations" element={<AIRecommendationsPage />} />
             <Route path="/reports" element={<ReportsPage />} />
             <Route path="/alerts" element={<AlertsPage />} />

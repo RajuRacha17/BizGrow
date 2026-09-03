@@ -30,7 +30,7 @@ export default function Navbar({ title, darkMode, onToggleDark }) {
 
   useEffect(() => {
     fetchNotifications()
-    const interval = setInterval(fetchNotifications, 5000) // Poll notifications periodically
+    const interval = setInterval(fetchNotifications, 5000)
     return () => clearInterval(interval)
   }, [])
 

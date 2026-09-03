@@ -28,12 +28,12 @@ export default function DataUploadPage() {
   const [currentAnalysis, setCurrentAnalysis] = useState(null)
 
   const stepsList = [
-    'Uploading File',
-    'Validating Format & Headers',
-    'Detecting Columns & Schema',
-    'Cleaning & Profiling Data',
-    'Calculating KPIs & Health Score',
-    'Running AI Diagnostic Pipeline'
+    'Your data has been uploaded successfully.',
+    'Validating file structure & record counts...',
+    'We are looking for important patterns in your business...',
+    'We are checking which areas are performing well...',
+    'We are identifying areas that need attention...',
+    'We are preparing recommendations based on your data.'
   ]
 
   const fetchHistory = () => {
@@ -256,14 +256,23 @@ export default function DataUploadPage() {
       {currentAnalysis && currentAnalysis.summary && (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 24, marginBottom: 28 }}>
           <div className="card" style={{ padding: 24 }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
               <div>
-                <h3 style={{ fontSize: 16, fontWeight: 700 }}>Active Dataset Preview & Quality Profile</h3>
-                <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Automatically mapped headers and cleaned record preview</p>
+                <h3 style={{ fontSize: 16, fontWeight: 700 }}>Active Dataset Summary</h3>
+                <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Overview of records and data structure</p>
               </div>
               <span className="badge badge-info" style={{ background: '#10B98115', color: '#10B981' }}>
-                Quality Score: {currentAnalysis.summary.qualityScore}/100
+                Data Readiness: {currentAnalysis.summary.qualityScore}/100
               </span>
+            </div>
+
+            <div style={{ marginBottom: 20, padding: '14px 18px', borderRadius: 8, backgroundColor: 'rgba(37, 99, 235, 0.05)', border: '1px solid rgba(37, 99, 235, 0.15)' }}>
+              <p style={{ fontSize: 14, fontWeight: 700, color: 'var(--primary)', margin: 0 }}>
+                YOUR DATA: We found {currentAnalysis.profile?.totalRows?.toLocaleString() || 0} records in your uploaded file.
+              </p>
+              <p style={{ fontSize: 13, color: 'var(--text-main)', margin: '4px 0 0', lineHeight: 1.4 }}>
+                Your dataset contains information about sales performance, customer activity, and regional metrics.
+              </p>
             </div>
 
             {/* Quality Summary Grid */}

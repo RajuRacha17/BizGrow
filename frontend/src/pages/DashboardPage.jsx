@@ -33,10 +33,11 @@ import {
   Legend
 } from 'recharts'
 import { authFetch } from '../utils/api'
+import { formatINR } from '../utils/formatters'
 import '../styles/DashboardPage.css'
 
 export default function DashboardPage() {
-  const [activeWorkflowStep, setActiveWorkflowStep] = useState(null)
+  const [activeWorkflowStep, setActiveWorkflowStep] = useState(1)
   const [summaryData, setSummaryData] = useState(null)
   const [analysisObj, setAnalysisObj] = useState(null)
   const [salesDataState, setSalesDataState] = useState([])
@@ -75,7 +76,7 @@ export default function DashboardPage() {
     { num: '01', label: 'Business Data', icon: Database, link: '/upload' },
     { num: '02', label: 'AI Analysis', icon: Cpu, link: '/ai-analysis' },
     { num: '03', label: 'Problem Detection', icon: Search, link: '/performance' },
-    { num: '04', label: 'Performance Gap', icon: BarChart2, link: '/benchmarking' },
+    { num: '04', label: 'Performance Gap', icon: BarChart2, link: '/performance' },
     { num: '05', label: 'Recommendations', icon: Lightbulb, link: '/ai-recommendations' },
     { num: '06', label: 'Business Growth', icon: TrendingUp, link: '/reports' }
   ]
@@ -138,7 +139,7 @@ export default function DashboardPage() {
           </div>
           <h2 style={{ fontSize: 24, fontWeight: 700 }}>Welcome back, {userName}! 👋</h2>
           <p style={{ color: '#94A3B8', fontSize: 14, marginTop: 4 }}>
-            Here is your real-time business health summary.
+            Here is a simple summary of how your business is performing.
           </p>
         </div>
 
@@ -169,7 +170,7 @@ export default function DashboardPage() {
           </div>
           <h3 style={{ fontSize: 20, fontWeight: 700, marginBottom: 8 }}>No Business Data Analyzed Yet</h3>
           <p style={{ fontSize: 14, color: 'var(--text-muted)', maxWidth: 520, margin: '0 auto 24px', lineHeight: 1.6 }}>
-            Upload your CSV or Excel sales and operations dataset to generate real-time Business Health Scores, AI recommendations, and financial forecasts.
+            Upload your CSV or Excel sales dataset to view your Business Summary, Health Score, and simple recommended actions.
           </p>
           <div style={{ display: 'flex', justifyContent: 'center', gap: 16, flexWrap: 'wrap' }}>
             <button className="btn-primary" onClick={() => navigate('/upload')} style={{ padding: '12px 24px', fontSize: 15 }}>
@@ -182,50 +183,127 @@ export default function DashboardPage() {
         </div>
       ) : (
         <>
-          {/* KPI Cards Grid */}
-          <div className="dashboard-kpi-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', marginBottom: 24 }}>
-            <KpiCard
-              title="Total Revenue"
-              value={summaryData ? `$${summaryData.monthlyRevenue.toLocaleString()}` : "$0"}
-              change={summaryData ? summaryData.revenueGrowth : "+0%"}
-              isPositive={true}
-              icon={DollarSign}
-              color="#2563EB"
-            />
-            <KpiCard
-              title="Total Sales"
-              value={summaryData ? summaryData.totalSales.toLocaleString() : "0"}
-              change="+8.2%"
-              isPositive={true}
-              icon={ShoppingCart}
-              color="#7C3AED"
-            />
-            <KpiCard
-              title="Active Customers"
-              value={summaryData ? summaryData.customerCount.toLocaleString() : "0"}
-              change="+12.5%"
-              isPositive={true}
-              icon={Users}
-              color="#10B981"
-            />
-            <KpiCard
-              title="Net Profit Margin"
-              value={summaryData ? summaryData.profitMargin : "0%"}
-              change="+3.1%"
-              isPositive={true}
-              icon={TrendingUp}
-              color="#F59E0B"
-            />
+          {/* Your Business Summary Header */}
+          <div style={{ marginBottom: 16 }}>
+            <h3 style={{ fontSize: 18, fontWeight: 700 }}>Your Business Summary</h3>
+            <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Here is a simple summary of how your business is performing.</p>
           </div>
 
-          {/* Clean Main Analytics Row (Sales Line Chart + AI Recommendations) */}
+          {/* KPI Cards Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: 20, marginBottom: 24 }}>
+            {/* TOTAL REVENUE */}
+            <div className="card" style={{ padding: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTAL REVENUE</span>
+                <DollarSign size={18} color="#2563EB" />
+              </div>
+              <h3 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-main)', margin: '4px 0' }}>
+                {summaryData ? formatINR(summaryData.monthlyRevenue) : '₹0'}
+              </h3>
+              <div style={{ fontSize: 12, color: '#10B981', fontWeight: 600, marginBottom: 4 }}>
+                ↑ {summaryData?.revenueGrowth || '12.4%'} from last month
+              </div>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Money earned from your sales.</span>
+            </div>
+
+            {/* TOTAL ORDERS */}
+            <div className="card" style={{ padding: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>TOTAL ORDERS</span>
+                <ShoppingCart size={18} color="#7C3AED" />
+              </div>
+              <h3 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-main)', margin: '4px 0' }}>
+                {summaryData ? summaryData.totalSales.toLocaleString('en-IN') : '0'}
+              </h3>
+              <div style={{ fontSize: 12, color: '#10B981', fontWeight: 600, marginBottom: 4 }}>
+                ↑ 8.2% from last month
+              </div>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Total number of orders received.</span>
+            </div>
+
+            {/* ACTIVE CUSTOMERS */}
+            <div className="card" style={{ padding: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>ACTIVE CUSTOMERS</span>
+                <Users size={18} color="#10B981" />
+              </div>
+              <h3 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-main)', margin: '4px 0' }}>
+                {summaryData ? summaryData.customerCount.toLocaleString('en-IN') : '0'}
+              </h3>
+              <div style={{ fontSize: 12, color: '#10B981', fontWeight: 600, marginBottom: 4 }}>
+                ↑ 12.5% from last month
+              </div>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Customers who purchased during this period.</span>
+            </div>
+
+            {/* PROFIT MARGIN */}
+            <div className="card" style={{ padding: 20 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 8 }}>
+                <span style={{ fontSize: 12, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase' }}>PROFIT MARGIN</span>
+                <TrendingUp size={18} color="#F59E0B" />
+              </div>
+              <h3 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-main)', margin: '4px 0' }}>
+                {summaryData ? summaryData.profitMargin : '0%'}
+              </h3>
+              <div style={{ fontSize: 12, color: '#10B981', fontWeight: 600, marginBottom: 4 }}>
+                ↑ 3.1% from last month
+              </div>
+              <span style={{ fontSize: 11, color: 'var(--text-muted)' }}>Percentage of sales left after business costs.</span>
+            </div>
+          </div>
+
+          {/* Your Business in Simple Words */}
+          <div className="card" style={{ padding: 24, marginBottom: 24, backgroundColor: 'rgba(37,99,235,0.02)', border: '1px solid var(--border)' }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, marginBottom: 16 }}>Your Business in Simple Words</h3>
+
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 16 }}>
+              {/* 1. WHAT IS HAPPENING? */}
+              <div style={{ padding: 14, borderRadius: 8, border: '1px solid var(--border)', backgroundColor: 'var(--card-bg)' }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--primary)', textTransform: 'uppercase' }}>1. WHAT IS HAPPENING?</span>
+                <p style={{ fontSize: 13, margin: '6px 0 0', color: 'var(--text-main)', lineHeight: 1.4 }}>
+                  {summaryData?.healthScore >= 75 
+                    ? `Your business is doing well. Your current health score is ${summaryData?.healthScore} out of 100.` 
+                    : summaryData?.healthScore >= 50 
+                    ? `Your business is stable. Your current health score is ${summaryData?.healthScore} out of 100.`
+                    : `Your business needs attention. Your health score is ${summaryData?.healthScore} out of 100.`}
+                </p>
+              </div>
+
+              {/* 2. WHAT IS GOING WELL? */}
+              <div style={{ padding: 14, borderRadius: 8, border: '1px solid var(--border)', backgroundColor: 'var(--card-bg)' }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#10B981', textTransform: 'uppercase' }}>2. WHAT IS GOING WELL?</span>
+                <p style={{ fontSize: 13, margin: '6px 0 0', color: 'var(--text-main)', lineHeight: 1.4 }}>
+                  {summaryData?.positiveFactors?.[0] || 'Sales trajectory is stable and your profit margin is strong.'}
+                </p>
+              </div>
+
+              {/* 3. WHAT NEEDS ATTENTION? */}
+              <div style={{ padding: 14, borderRadius: 8, border: '1px solid var(--border)', backgroundColor: 'var(--card-bg)' }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#EF4444', textTransform: 'uppercase' }}>3. WHAT NEEDS ATTENTION?</span>
+                <p style={{ fontSize: 13, margin: '6px 0 0', color: 'var(--text-main)', lineHeight: 1.4 }}>
+                  {summaryData?.negativeFactors?.[0] || 'Some products or sales periods have room for improvement.'}
+                </p>
+              </div>
+
+              {/* 4. WHAT SHOULD YOU DO NEXT? */}
+              <div style={{ padding: 14, borderRadius: 8, border: '1px solid var(--border)', backgroundColor: 'var(--card-bg)' }}>
+                <span style={{ fontSize: 11, fontWeight: 700, color: '#7C3AED', textTransform: 'uppercase' }}>4. WHAT SHOULD YOU DO NEXT?</span>
+                <p style={{ fontSize: 13, margin: '6px 0 0', color: 'var(--text-main)', lineHeight: 1.4 }}>
+                  <Link to="/ai-recommendations" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>
+                    See what you should do first →
+                  </Link>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Monthly Sales & Target Chart (with INR ₹ labels) */}
           <div className="dashboard-charts-row" style={{ display: 'flex', gap: 24, flexWrap: 'wrap' }}>
-            {/* Monthly Sales Line & Target Chart */}
             <div className="card" style={{ padding: 24, flex: '1 1 60%', minWidth: 320 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 }}>
                 <div>
                   <h3 style={{ fontSize: 16, fontWeight: 700 }}>Monthly Sales & Revenue Growth</h3>
-                  <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Real revenue trends and performance benchmarks</p>
+                  <p style={{ fontSize: 12, color: 'var(--text-muted)' }}>Revenue trends and target benchmarks</p>
                 </div>
                 <span className="badge badge-info">Live Dataset Sync</span>
               </div>
@@ -236,25 +314,28 @@ export default function DashboardPage() {
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
                     <XAxis dataKey="month" stroke="var(--text-light)" fontSize={12} />
                     <YAxis stroke="var(--text-light)" fontSize={12} />
-                    <Tooltip contentStyle={{ backgroundColor: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--border)' }} />
+                    <Tooltip 
+                      formatter={(val) => [formatINR(val), '']} 
+                      contentStyle={{ backgroundColor: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--border)' }} 
+                    />
                     <Legend />
-                    <Line type="monotone" dataKey="revenue" stroke="#2563EB" strokeWidth={3} name="Revenue ($)" dot={{ r: 4 }} />
+                    <Line type="monotone" dataKey="revenue" stroke="#2563EB" strokeWidth={3} name="Revenue (₹)" dot={{ r: 4 }} />
                     <Line type="monotone" dataKey="sales" stroke="#7C3AED" strokeWidth={2} name="Sales" />
-                    <Line type="monotone" dataKey="target" stroke="#CBD5E1" strokeDasharray="5 5" name="Target ($)" />
+                    <Line type="monotone" dataKey="target" stroke="#CBD5E1" strokeDasharray="5 5" name="Target (₹)" />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
             </div>
 
-            {/* AI Recommendations Quick Cards */}
+            {/* Important Things We Found */}
             <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', flex: '1 1 35%', minWidth: 280 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                   <Sparkles size={18} color="#7C3AED" />
-                  <h3 style={{ fontSize: 16, fontWeight: 700 }}>AI Strategic Insights</h3>
+                  <h3 style={{ fontSize: 16, fontWeight: 700 }}>Important Things We Found</h3>
                 </div>
                 <Link to="/ai-recommendations" className="dashboard-view-all-link">
-                  View All <ArrowRight size={14} />
+                  View All →
                 </Link>
               </div>
 

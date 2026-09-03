@@ -5,6 +5,7 @@ import Analysis from '../models/Analysis.js';
 import ActionItem from '../models/ActionItem.js';
 import AlertItem from '../models/AlertItem.js';
 import { parseFileBuffer, analyzeDataset } from '../utils/analyticsEngine.js';
+import { generateBusinessInsights } from '../utils/geminiService.js';
 
 const router = express.Router();
 const upload = multer({ storage: multer.memoryStorage() });
@@ -41,6 +42,19 @@ router.post('/upload', upload.single('dataset'), async (req, res) => {
 
     // Run Analytics Engine
     const analysisResult = analyzeDataset(rawRows);
+
+    // Call Gemini AI Service (or fallback) using structured numerical summary
+    try {
+      const geminiOutput = await generateBusinessInsights(analysisResult);
+      if (geminiOutput && geminiOutput.summary) {
+        analysisResult.mlAnalysis.summaryText = geminiOutput.summary;
+        if (geminiOutput.recommendations && geminiOutput.recommendations.length > 0) {
+          analysisResult.recommendations = geminiOutput.recommendations;
+        }
+      }
+    } catch (gErr) {
+      console.log('Gemini processing fallback:', gErr.message);
+    }
 
     // Save Dataset metadata
     const newDataset = new Dataset({
