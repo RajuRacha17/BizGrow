@@ -9,7 +9,7 @@
 /* 6-Step PBIS Workflow Tracker Banner */
 .dashboard-workflow-tracker {
   padding: 20px 24px;
-  background: #FFFFFF;
+  background: var(--card-bg);
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-sm);
@@ -45,19 +45,19 @@
   gap: 10px;
   padding: 10px 12px;
   border-radius: var(--radius-md);
-  background: #F8FAFC;
+  background: var(--bg);
   border: 1px solid var(--border);
   cursor: pointer;
   transition: all 0.2s ease;
 }
 
 .dashboard-wf-step-item:hover {
-  background: #EFF6FF;
+  background: rgba(37, 99, 235, 0.1);
   border-color: rgba(37, 99, 235, 0.3);
 }
 
 .dashboard-wf-step-item.active {
-  background: #EFF6FF;
+  background: rgba(37, 99, 235, 0.15);
   border-color: #2563EB;
   box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);
 }
@@ -66,7 +66,7 @@
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  background: #FFFFFF;
+  background: var(--card-bg);
   border: 1px solid var(--border);
   color: var(--text-muted);
   display: flex;
@@ -198,7 +198,7 @@
 .dashboard-modal-card {
   width: 100%;
   max-width: 520px;
-  background: #FFFFFF;
+  background: var(--card-bg);
   border-radius: var(--radius-lg);
   box-shadow: 0 20px 40px rgba(15, 23, 42, 0.2);
   overflow: hidden;
@@ -228,7 +228,7 @@
 }
 
 .dashboard-modal-close:hover {
-  background: #F1F5F9;
+  background: var(--bg);
   color: var(--text-main);
 }
 
@@ -237,11 +237,11 @@
 }
 
 .dashboard-upload-zone {
-  border: 2px dashed #CBD5E1;
+  border: 2px dashed var(--border);
   border-radius: var(--radius-md);
   padding: 32px 20px;
   text-align: center;
-  background: #F8FAFC;
+  background: var(--bg);
   transition: border-color 0.2s ease;
 }
 
@@ -303,3 +303,63 @@
     align-items: flex-start;
   }
 }
+
+/* Dark Theme Specific Overrides for Dashboard */
+.dark-theme .dashboard-hero-card {
+  background: linear-gradient(135deg, #1E293B 0%, #0F172A 100%);
+  border: 1px solid #263346;
+}
+
+.dark-theme .dashboard-wf-title {
+  color: #F8FAFC;
+}
+
+.dark-theme .dashboard-wf-step-item {
+  background: #0B0F19;
+  border-color: #263346;
+}
+
+.dark-theme .dashboard-wf-step-item:hover {
+  background: rgba(59, 130, 246, 0.15);
+  border-color: rgba(59, 130, 246, 0.4);
+}
+
+.dark-theme .dashboard-wf-step-item.active {
+  background: rgba(59, 130, 246, 0.25);
+  border-color: #3B82F6;
+  box-shadow: 0 2px 10px rgba(59, 130, 246, 0.25);
+}
+
+.dark-theme .dashboard-wf-step-badge {
+  background: #151D2A;
+  border-color: #263346;
+  color: #94A3B8;
+}
+
+.dark-theme .dashboard-wf-step-item.active .dashboard-wf-step-badge {
+  background: #3B82F6;
+  color: #FFFFFF;
+  border-color: #3B82F6;
+}
+
+.dark-theme .dashboard-wf-num {
+  color: #94A3B8;
+}
+
+.dark-theme .dashboard-wf-step-item.active .dashboard-wf-num {
+  color: #60A5FA;
+}
+
+.dark-theme .dashboard-wf-label {
+  color: #F8FAFC;
+}
+
+.dark-theme .dashboard-view-all-link {
+  color: #60A5FA;
+}
+
+.dark-theme .dashboard-ai-item {
+  background-color: #0B0F19;
+  border-color: #263346;
+}
+

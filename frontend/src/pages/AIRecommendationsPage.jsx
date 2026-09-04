@@ -7,6 +7,7 @@ import '../styles/DashboardPage.css'
 export default function AIRecommendationsPage() {
   const [recommendations, setRecommendations] = useState([])
   const [actionItems, setActionItems] = useState([])
+  const [selectedIndustry, setSelectedIndustry] = useState('All')
   const [expandedIndex, setExpandedIndex] = useState(0) // Default first card expanded
   const [loading, setLoading] = useState(true)
   const navigate = useNavigate()
@@ -55,6 +56,45 @@ export default function AIRecommendationsPage() {
         </div>
       </div>
 
+      {/* Industry Sector Filter & BizQuery Quick Tool Bar */}
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 12,
+        marginBottom: 20,
+        padding: '14px 18px',
+        backgroundColor: 'var(--card-bg)',
+        border: '1px solid var(--border)',
+        borderRadius: 'var(--radius-md)'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-muted)' }}>Business Industry Solution:</span>
+          <select
+            value={selectedIndustry}
+            onChange={e => setSelectedIndustry(e.target.value)}
+            style={{
+              padding: '8px 12px',
+              borderRadius: 'var(--radius-sm)',
+              border: '1px solid var(--border)',
+              backgroundColor: 'var(--bg)',
+              color: 'var(--text-main)',
+              fontSize: 13,
+              fontWeight: 600
+            }}
+          >
+            <option value="All">All Business Solutions</option>
+            <option value="Retail">Retail & E-commerce</option>
+            <option value="Restaurant">Restaurant & Food Services</option>
+            <option value="Services">Professional Services & Consulting</option>
+            <option value="Manufacturing">Manufacturing & Wholesale</option>
+            <option value="Healthcare">Healthcare & Wellness</option>
+            <option value="SaaS">SaaS & Technology</option>
+          </select>
+        </div>
+      </div>
+
       {/* Strategic Recommendations Cards */}
       <div style={{ marginBottom: 32 }}>
         <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>Recommendations & Insights</h3>
@@ -77,7 +117,7 @@ export default function AIRecommendationsPage() {
                       <span className="badge badge-info" style={{ background: rec.priority === 'HIGH' ? '#EF444415' : '#F59E0B15', color: rec.priority === 'HIGH' ? '#EF4444' : '#F59E0B', fontWeight: 700 }}>
                         {rec.priority === 'HIGH' ? '🔴 HIGH PRIORITY' : rec.priority === 'MEDIUM' ? '🟠 MEDIUM PRIORITY' : '🟢 LOW PRIORITY'}
                       </span>
-                      <h4 style={{ fontSize: 16, fontWeight: 700 }}>{rec.title}</h4>
+                      <h4 style={{ fontSize: 16, fontWeight: 700, color: 'var(--text-main)' }}>{rec.title}</h4>
                     </div>
 
                     <button className="btn-secondary" style={{ fontSize: 12, padding: '6px 12px', display: 'flex', alignItems: 'center', gap: 4 }}>
@@ -123,7 +163,7 @@ export default function AIRecommendationsPage() {
 
       {/* Priority Action Plan */}
       <div className="card" style={{ padding: 24 }}>
-        <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16 }}>Priority Action Plan (Interactive)</h3>
+        <h3 style={{ fontSize: 18, fontWeight: 700, marginBottom: 16, color: 'var(--text-main)' }}>Priority Action Plan (Interactive)</h3>
         {actionItems.length === 0 ? (
           <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>No action plan items recorded yet.</p>
         ) : (
@@ -131,46 +171,58 @@ export default function AIRecommendationsPage() {
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 13 }}>
               <thead>
                 <tr style={{ borderBottom: '2px solid var(--border)', textAlign: 'left' }}>
-                  <th style={{ padding: '10px 14px' }}>#</th>
-                  <th style={{ padding: '10px 14px' }}>Action Item</th>
-                  <th style={{ padding: '10px 14px' }}>Priority</th>
-                  <th style={{ padding: '10px 14px' }}>Timeline</th>
-                  <th style={{ padding: '10px 14px' }}>Status</th>
+                  <th style={{ padding: '10px 14px', color: 'var(--text-muted)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase' }}>#</th>
+                  <th style={{ padding: '10px 14px', color: 'var(--text-muted)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase' }}>Action Item</th>
+                  <th style={{ padding: '10px 14px', color: 'var(--text-muted)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase' }}>Priority</th>
+                  <th style={{ padding: '10px 14px', color: 'var(--text-muted)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase' }}>Timeline</th>
+                  <th style={{ padding: '10px 14px', color: 'var(--text-muted)', fontWeight: 700, fontSize: 12, textTransform: 'uppercase' }}>Status</th>
                 </tr>
               </thead>
               <tbody>
-                {actionItems.map((item, idx) => (
-                  <tr key={item._id} style={{ borderBottom: '1px solid var(--border)' }}>
-                    <td style={{ padding: '10px 14px', fontWeight: 700, color: 'var(--text-muted)' }}>{idx + 1}</td>
-                    <td style={{ padding: '10px 14px', fontWeight: 600 }}>{item.title}</td>
-                    <td style={{ padding: '10px 14px' }}>
-                      <span className="badge badge-info" style={{ background: item.priority === 'HIGH' ? '#EF444415' : '#F59E0B15', color: item.priority === 'HIGH' ? '#EF4444' : '#F59E0B' }}>
-                        {item.priority}
-                      </span>
-                    </td>
-                    <td style={{ padding: '10px 14px', color: 'var(--text-muted)' }}>{item.dueDate}</td>
-                    <td style={{ padding: '10px 14px' }}>
-                      <select
-                        value={item.status}
-                        onChange={(e) => handleUpdateStatus(item._id, e.target.value)}
-                        style={{
-                          padding: '6px 12px',
-                          borderRadius: 6,
-                          border: '1px solid var(--border)',
-                          backgroundColor: item.status === 'COMPLETED' ? '#dcfce7' : item.status === 'IN_PROGRESS' ? '#dbeafe' : 'var(--bg)',
-                          color: item.status === 'COMPLETED' ? '#166534' : item.status === 'IN_PROGRESS' ? '#1e40af' : 'var(--text-main)',
-                          fontWeight: 600,
-                          fontSize: 12,
-                          cursor: 'pointer'
-                        }}
-                      >
-                        <option value="PENDING">Pending</option>
-                        <option value="IN_PROGRESS">In Progress</option>
-                        <option value="COMPLETED">Completed</option>
-                      </select>
-                    </td>
-                  </tr>
-                ))}
+                {actionItems.map((item, idx) => {
+                  const isCompleted = item.status === 'COMPLETED';
+                  const isInProgress = item.status === 'IN_PROGRESS';
+
+                  return (
+                    <tr key={item._id} style={{ borderBottom: '1px solid var(--border)' }}>
+                      <td style={{ padding: '10px 14px', fontWeight: 700, color: 'var(--text-muted)' }}>{idx + 1}</td>
+                      <td style={{ padding: '10px 14px', fontWeight: 600, color: 'var(--text-main)' }}>{item.title}</td>
+                      <td style={{ padding: '10px 14px' }}>
+                        <span
+                          className="badge"
+                          style={{
+                            backgroundColor: item.priority === 'HIGH' ? 'rgba(239, 68, 68, 0.18)' : 'rgba(245, 158, 11, 0.18)',
+                            color: item.priority === 'HIGH' ? '#EF4444' : '#F59E0B',
+                            border: `1px solid ${item.priority === 'HIGH' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(245, 158, 11, 0.3)'}`
+                          }}
+                        >
+                          {item.priority}
+                        </span>
+                      </td>
+                      <td style={{ padding: '10px 14px', color: 'var(--text-muted)' }}>{item.dueDate}</td>
+                      <td style={{ padding: '10px 14px' }}>
+                        <select
+                          value={item.status}
+                          onChange={(e) => handleUpdateStatus(item._id, e.target.value)}
+                          style={{
+                            padding: '6px 12px',
+                            borderRadius: 6,
+                            border: `1px solid ${isCompleted ? 'rgba(16, 185, 129, 0.4)' : isInProgress ? 'rgba(59, 130, 246, 0.4)' : 'var(--border)'}`,
+                            backgroundColor: isCompleted ? 'rgba(16, 185, 129, 0.15)' : isInProgress ? 'rgba(59, 130, 246, 0.15)' : 'var(--card-bg)',
+                            color: isCompleted ? '#10B981' : isInProgress ? '#3B82F6' : 'var(--text-main)',
+                            fontWeight: 600,
+                            fontSize: 12,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          <option value="PENDING" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-main)' }}>Pending</option>
+                          <option value="IN_PROGRESS" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-main)' }}>In Progress</option>
+                          <option value="COMPLETED" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-main)' }}>Completed</option>
+                        </select>
+                      </td>
+                    </tr>
+                  )
+                })}
               </tbody>
             </table>
           </div>

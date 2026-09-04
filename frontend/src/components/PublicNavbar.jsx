@@ -25,15 +25,19 @@ export default function PublicNavbar() {
   return (
     <header className={`pbis-pub-navbar ${scrolled ? 'scrolled' : ''}`}>
       <div className="pbis-pub-nav-container">
-        {/* Brand Logo */}
+        {/* Brand Logo & Title */}
         <Link to="/" className="pbis-pub-brand" onClick={closeMobileMenu}>
-          <img src="/logo.png" alt="BizGrow Logo" style={{ height: 43, objectFit: 'contain' }} />
+          <img src="/bizgrow-logo.png" alt="BizGrow Logo" className="pbis-pub-logo-img" />
+          <div className="pbis-pub-brand-text">
+            <span className="pbis-pub-brand-title">BizGrow</span>
+            <span className="pbis-pub-brand-subtitle">Business Analytics</span>
+          </div>
         </Link>
 
         {/* Center Desktop Navigation Links */}
         <nav className="pbis-pub-nav-links">
           <a href="/#top" className="pbis-pub-link">Home</a>
-          <a href="/#how-it-works" className="pbis-pub-link">How It Works</a>
+          <a href="/#how-it-works" className="pbis-pub-link">Workflow</a>
           <a href="/#transformation-engine" className="pbis-pub-link">Transformation</a>
           <a href="/#diagnostic-advantage" className="pbis-pub-link">Why PBIS</a>
           <a href="/#features" className="pbis-pub-link">Features</a>
@@ -67,7 +71,7 @@ export default function PublicNavbar() {
         <div className="pbis-pub-mobile-menu">
           <nav className="pbis-pub-mobile-nav">
             <a href="/#top" className="pbis-pub-mobile-link" onClick={closeMobileMenu}>Home</a>
-            <a href="/#how-it-works" className="pbis-pub-mobile-link" onClick={closeMobileMenu}>How It Works</a>
+            <a href="/#how-it-works" className="pbis-pub-mobile-link" onClick={closeMobileMenu}>Workflow</a>
             <a href="/#transformation-engine" className="pbis-pub-mobile-link" onClick={closeMobileMenu}>Transformation Pipeline</a>
             <a href="/#diagnostic-advantage" className="pbis-pub-mobile-link" onClick={closeMobileMenu}>Why PBIS</a>
             <a href="/#features" className="pbis-pub-mobile-link" onClick={closeMobileMenu}>Features</a>

@@ -12,7 +12,6 @@ router.get('/summary', async (req, res) => {
     const latestAnalysis = await Analysis.findOne({ userId }).sort({ createdAt: -1 });
 
     if (!latestAnalysis) {
-      // Return clean empty dataset indicator
       return res.json({
         success: true,
         empty: true,

@@ -77,31 +77,28 @@ export default function ReportsPage() {
           <button className="btn-primary" onClick={handlePrint} style={{ padding: '10px 18px', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
             <Printer size={16} /> Print / Export Report
           </button>
-          <button className="btn-primary" onClick={handleGenerateReport} style={{ padding: '10px 18px', display: 'inline-flex', alignItems: 'center', gap: 8, background: 'var(--secondary)' }}>
-            <Sparkles size={16} /> Generate New Audit
-          </button>
         </div>
       </div>
 
       {/* Printable Report Document Card */}
-      <div className="card" style={{ padding: 40, marginBottom: 28, backgroundColor: '#FFF', color: '#0F172A', borderRadius: 12, border: '1px solid #E2E8F0' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid #E2E8F0', paddingBottom: 20, marginBottom: 24 }}>
+      <div className="card" style={{ padding: 40, marginBottom: 28, backgroundColor: 'var(--card-bg)', color: 'var(--text-main)', borderRadius: 12, border: '1px solid var(--border)' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', borderBottom: '2px solid var(--border)', paddingBottom: 20, marginBottom: 24 }}>
           <div>
-            <h1 style={{ fontSize: 24, fontWeight: 800, color: '#1E293B', margin: 0 }}>Executive Business Audit</h1>
-            <p style={{ color: '#64748B', fontSize: 13, margin: '4px 0 0' }}>Dataset: {analysis.datasetName || 'Uploaded Business Data'}</p>
+            <h1 style={{ fontSize: 24, fontWeight: 800, color: 'var(--text-main)', margin: 0 }}>Executive Business Audit</h1>
+            <p style={{ color: 'var(--text-muted)', fontSize: 13, margin: '4px 0 0' }}>Dataset: {analysis.datasetName || 'Uploaded Business Data'}</p>
           </div>
           <div style={{ textAlign: 'right' }}>
-            <span style={{ fontSize: 12, color: '#64748B' }}>Date: {new Date().toLocaleDateString()}</span>
-            <div style={{ fontSize: 20, fontWeight: 800, color: '#2563EB', marginTop: 4 }}>Health Score: {summary.healthScore}/100</div>
+            <span style={{ fontSize: 12, color: 'var(--text-muted)' }}>Date: {new Date().toLocaleDateString()}</span>
+            <div style={{ fontSize: 20, fontWeight: 800, color: 'var(--primary)', marginTop: 4 }}>Health Score: {summary.healthScore}/100</div>
           </div>
         </div>
 
         {/* Section 1: Business Summary */}
         <div style={{ marginBottom: 24 }}>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#1E293B', marginBottom: 8, borderLeft: '4px solid #2563EB', paddingLeft: 10 }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--text-main)', marginBottom: 8, borderLeft: '4px solid var(--primary)', paddingLeft: 10 }}>
             BUSINESS SUMMARY
           </h3>
-          <p style={{ fontSize: 13, color: '#334155', lineHeight: 1.6, margin: 0 }}>
+          <p style={{ fontSize: 13, color: 'var(--text-main)', lineHeight: 1.6, margin: 0 }}>
             Your business is performing with an overall health score of {summary.healthScore} out of 100 ({summary.healthStatus}). Total revenue earned is {formatINR(summary.monthlyRevenue)} across {summary.totalSales} completed orders with a profit margin of {summary.profitMargin}.
           </p>
         </div>
@@ -113,7 +110,7 @@ export default function ReportsPage() {
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {(summary.positiveFactors || ['Revenue trajectory is stable across recent periods.', 'Dataset structure is complete and ready for ongoing evaluation.']).map((pos, idx) => (
-              <div key={idx} style={{ fontSize: 13, color: '#334155' }}>✓ {pos}</div>
+              <div key={idx} style={{ fontSize: 13, color: 'var(--text-main)' }}>✓ {pos}</div>
             ))}
           </div>
         </div>
@@ -125,21 +122,21 @@ export default function ReportsPage() {
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
             {(summary.negativeFactors || ['Profit margin retention needs review.', 'Underperforming product lines require pricing audit.']).map((neg, idx) => (
-              <div key={idx} style={{ fontSize: 13, color: '#334155' }}>⚠ {neg}</div>
+              <div key={idx} style={{ fontSize: 13, color: 'var(--text-main)' }}>⚠ {neg}</div>
             ))}
           </div>
         </div>
 
         {/* Section 4: Recommendations & Priority Action Plan */}
         <div>
-          <h3 style={{ fontSize: 15, fontWeight: 700, color: '#2563EB', marginBottom: 8, borderLeft: '4px solid #2563EB', paddingLeft: 10 }}>
+          <h3 style={{ fontSize: 15, fontWeight: 700, color: 'var(--primary)', marginBottom: 8, borderLeft: '4px solid var(--primary)', paddingLeft: 10 }}>
             RECOMMENDATIONS & PRIORITY ACTION PLAN
           </h3>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {(recommendations || []).map((rec, idx) => (
-              <div key={idx} style={{ padding: 12, background: '#F8FAFC', borderRadius: 8, border: '1px solid #E2E8F0' }}>
-                <div style={{ fontWeight: 700, fontSize: 13, color: '#1E293B' }}>{idx + 1}. {rec.title} ({rec.priority} Priority)</div>
-                <div style={{ fontSize: 12, color: '#475569', marginTop: 4 }}>Action: {rec.recommendedAction}</div>
+              <div key={idx} style={{ padding: 12, background: 'var(--bg)', borderRadius: 8, border: '1px solid var(--border)' }}>
+                <div style={{ fontWeight: 700, fontSize: 13, color: 'var(--text-main)' }}>{idx + 1}. {rec.title} ({rec.priority} Priority)</div>
+                <div style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 4 }}>Action: {rec.recommendedAction}</div>
               </div>
             ))}
           </div>

@@ -339,40 +339,147 @@ export function analyzeDataset(rawRows) {
     };
   }
 
-  // Business Health Score Calculation (0-100)
-  let healthScore = 70;
+  // Business Health Dimension Sub-Scores & Dynamic Calculation (0-100)
   const positiveFactors = [];
   const negativeFactors = [];
+  const attentionItems = [];
 
-  if (profitMargin >= 30) {
-    healthScore += 12;
-    positiveFactors.push(`Strong profit margin of ${profitMargin.toFixed(1)}%`);
-  } else if (profitMargin < 15) {
-    healthScore -= 10;
-    negativeFactors.push(`Low profit margin of ${profitMargin.toFixed(1)}%`);
-  }
-
-  if (profile.qualityScore >= 85) {
-    healthScore += 10;
-    positiveFactors.push(`High dataset quality score (${profile.qualityScore}/100)`);
-  } else {
-    healthScore -= 8;
-    negativeFactors.push(`Data quality issues detected (${profile.qualityScore}/100)`);
-  }
-
+  // 1. Revenue Trajectory Score (25% Weight)
+  let revenueScore = 70;
   if (salesData.length >= 2) {
     const lastRev = salesData[salesData.length - 1].revenue;
     const prevRev = salesData[salesData.length - 2].revenue;
-    if (lastRev >= prevRev) {
-      healthScore += 10;
-      positiveFactors.push(`Positive revenue trajectory in recent period`);
-    } else {
-      healthScore -= 12;
-      negativeFactors.push(`Recent period revenue contraction detected`);
+    if (prevRev > 0) {
+      const growthPct = ((lastRev - prevRev) / prevRev) * 100;
+      if (growthPct >= 15) {
+        revenueScore = 92;
+        positiveFactors.push(`Strong revenue growth (+${growthPct.toFixed(1)}%) in recent period.`);
+      } else if (growthPct >= 0) {
+        revenueScore = 78;
+        positiveFactors.push(`Stable revenue growth (+${growthPct.toFixed(1)}%) across periods.`);
+      } else {
+        revenueScore = 55;
+        negativeFactors.push(`Recent period revenue contraction (${growthPct.toFixed(1)}%) detected.`);
+        attentionItems.push({
+          title: 'Recent Revenue Contraction',
+          detail: `Sales dropped by ${Math.abs(growthPct).toFixed(1)}% in the latest period compared to previous performance.`,
+          severity: 'HIGH',
+          impact: 'Top-line contraction'
+        });
+      }
     }
+  } else {
+    revenueScore = totalRevenue > 100000 ? 82 : totalRevenue > 25000 ? 70 : 58;
+    if (totalRevenue > 50000) positiveFactors.push(`Solid monthly sales volume of ₹${Math.round(totalRevenue).toLocaleString('en-IN')}`);
   }
 
-  healthScore = Math.max(35, Math.min(98, Math.round(healthScore)));
+  // 2. Profitability & Margin Score (25% Weight)
+  let profitScore = 65;
+  if (profitMargin >= 35) {
+    profitScore = 95;
+    positiveFactors.push(`Excellent profit margin of ${profitMargin.toFixed(1)}%, well above 25% industry benchmark.`);
+  } else if (profitMargin >= 20) {
+    profitScore = 80;
+    positiveFactors.push(`Healthy profit margin of ${profitMargin.toFixed(1)}%.`);
+  } else if (profitMargin >= 10) {
+    profitScore = 60;
+    negativeFactors.push(`Profit margin of ${profitMargin.toFixed(1)}% is below optimal target (25%).`);
+    attentionItems.push({
+      title: 'Below-Target Profit Margins',
+      detail: `Your current net profit margin is ${profitMargin.toFixed(1)}%. Target baseline for your sector is 25%.`,
+      severity: 'MEDIUM',
+      impact: 'Reduced profit buffer'
+    });
+  } else {
+    profitScore = 40;
+    negativeFactors.push(`Critical low profit margin of ${profitMargin.toFixed(1)}% requires cost control.`);
+    attentionItems.push({
+      title: 'Critically Low Margin Buffer',
+      detail: `Operating margin is running at only ${profitMargin.toFixed(1)}%, leaving minimal protection against supplier price increases.`,
+      severity: 'HIGH',
+      impact: 'Financial risk'
+    });
+  }
+
+  // 3. Customer Activity & Retention Score (20% Weight)
+  let customerScore = 75;
+  const totalCust = customerData.totalCustomers || validOrderCount;
+  if (totalCust > 50) {
+    customerScore = 88;
+    positiveFactors.push(`Broad customer base of ${totalCust} active accounts.`);
+  } else if (totalCust > 15) {
+    customerScore = 75;
+  } else {
+    customerScore = 58;
+    negativeFactors.push(`Small customer base (${totalCust} accounts) creates revenue dependency risk.`);
+    attentionItems.push({
+      title: 'Customer Concentration Risk',
+      detail: `Relying on only ${totalCust} active accounts increases vulnerability if any key customer churns.`,
+      severity: 'MEDIUM',
+      impact: 'Customer churn vulnerability'
+    });
+  }
+
+  // 4. Product Portfolio Diversification Score (15% Weight)
+  let productScore = 75;
+  if (productPerformanceData.length >= 5) {
+    const topProdSales = productPerformanceData[0]?.revenue || 0;
+    const topShare = totalRevenue > 0 ? (topProdSales / totalRevenue) * 100 : 0;
+    if (topShare > 45) {
+      productScore = 62;
+      negativeFactors.push(`High reliance on top item "${productPerformanceData[0].name}" (${topShare.toFixed(1)}% of total sales).`);
+      attentionItems.push({
+        title: 'Single Product Dependency',
+        detail: `Top item "${productPerformanceData[0].name}" generates ${topShare.toFixed(1)}% of total sales. Broaden marketing for secondary items.`,
+        severity: 'MEDIUM',
+        impact: 'Product concentration'
+      });
+    } else {
+      productScore = 90;
+      positiveFactors.push(`Balanced product sales across ${productPerformanceData.length} active items.`);
+    }
+  } else {
+    productScore = 68;
+    attentionItems.push({
+      title: 'Limited Product Catalog Coverage',
+      detail: `Only ${productPerformanceData.length || 1} product/service categories detected in dataset. Consider expanding catalog.`,
+      severity: 'LOW',
+      impact: 'Growth ceiling'
+    });
+  }
+
+  // 5. Data Readiness & Quality Score (15% Weight)
+  const qualityScore = profile.qualityScore || 80;
+  if (qualityScore >= 85) {
+    positiveFactors.push(`High dataset quality score (${qualityScore}/100).`);
+  } else {
+    negativeFactors.push(`Dataset quality score is ${qualityScore}/100 due to missing fields or empty cells.`);
+    attentionItems.push({
+      title: 'Data Quality & Field Completeness Gaps',
+      detail: `Dataset quality is ${qualityScore}/100. Filling missing date/customer fields will improve AI forecast accuracy.`,
+      severity: 'LOW',
+      impact: 'Analytics precision'
+    });
+  }
+
+  // Compute Overall Dynamic Business Health Score
+  let healthScore = Math.round(
+    revenueScore * 0.25 +
+    profitScore * 0.25 +
+    customerScore * 0.20 +
+    productScore * 0.15 +
+    qualityScore * 0.15
+  );
+
+  healthScore = Math.max(25, Math.min(98, healthScore));
+
+  const dimensionScores = {
+    revenueScore,
+    profitScore,
+    customerScore,
+    productScore,
+    qualityScore
+  };
 
   // Forecasting Engine
   const hasDates = colMap.date && salesData.length >= 2;
@@ -533,7 +640,9 @@ export function analyzeDataset(rawRows) {
       avgOrderValue: Math.round(avgOrderValue),
       revenueGrowth: revenueGrowthRate,
       customerCount: customerData.totalCustomers || validOrderCount,
-      qualityScore: profile.qualityScore
+      qualityScore: profile.qualityScore,
+      dimensionScores,
+      attentionItems
     },
     profile,
     colMap,

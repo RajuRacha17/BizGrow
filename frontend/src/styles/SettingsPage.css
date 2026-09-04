@@ -38,3 +38,59 @@
   grid-template-columns: 1fr 1fr;
   gap: 16px;
 }
+
+/* Dark Theme Overrides for Settings Page */
+.dark-theme .settings-container {
+  color: var(--text-main);
+}
+
+.dark-theme .settings-tab-btn {
+  color: var(--text-muted);
+}
+
+.dark-theme .settings-tab-btn:hover {
+  background-color: rgba(59, 130, 246, 0.15);
+  color: #60A5FA;
+}
+
+.dark-theme .settings-tab-btn.active {
+  background-color: var(--primary);
+  color: #FFFFFF;
+}
+
+.dark-theme h3 {
+  color: #F8FAFC !important;
+}
+
+.dark-theme p {
+  color: #CBD5E1 !important;
+}
+
+.dark-theme label {
+  color: #F8FAFC !important;
+}
+
+.dark-theme .input-field {
+  background-color: #151D2A !important;
+  border-color: #263346 !important;
+  color: #F8FAFC !important;
+}
+
+.dark-theme .input-field:focus {
+  border-color: #3B82F6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25) !important;
+}
+
+.dark-theme .input-field::placeholder {
+  color: #94A3B8 !important;
+  opacity: 1 !important;
+}
+
+.dark-theme input:-webkit-autofill,
+.dark-theme input:-webkit-autofill:hover,
+.dark-theme input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #F8FAFC !important;
+  -webkit-box-shadow: 0 0 0px 1000px #151D2A inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+

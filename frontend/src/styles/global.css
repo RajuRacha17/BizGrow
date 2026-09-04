@@ -32,14 +32,20 @@
 }
 
 .dark-theme {
+  --primary: #3B82F6;
+  --primary-hover: #60A5FA;
+  --primary-glow: rgba(59, 130, 246, 0.35);
+  --secondary: #A78BFA;
+  --secondary-hover: #C084FC;
+  --secondary-glow: rgba(167, 139, 250, 0.35);
   --bg: #0B0F19;
   --card-bg: #151D2A;
   --border: #263346;
   --text-main: #F8FAFC;
-  --text-muted: #94A3B8;
-  --text-light: #64748B;
+  --text-muted: #CBD5E1;
+  --text-light: #94A3B8;
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
-  --shadow-hover: 0 16px 36px rgba(37, 99, 235, 0.25);
+  --shadow-hover: 0 16px 36px rgba(59, 130, 246, 0.25);
 }
 
 html {
@@ -198,6 +204,97 @@ h1, h2, h3, h4, h5, h6 {
 .badge-danger { background: #FEF2F2; color: #EF4444; }
 .badge-info { background: #EFF6FF; color: #2563EB; }
 
+.dark-theme .badge-success { background: rgba(16, 185, 129, 0.18) !important; color: #34D399 !important; }
+.dark-theme .badge-warning { background: rgba(245, 158, 11, 0.18) !important; color: #FBBF24 !important; }
+.dark-theme .badge-danger { background: rgba(239, 68, 68, 0.18) !important; color: #F87171 !important; }
+.dark-theme .badge-info { background: rgba(59, 130, 246, 0.18) !important; color: #60A5FA !important; }
+
+/* Global Dark Theme Form Controls */
+.dark-theme input,
+.dark-theme select,
+.dark-theme textarea,
+.dark-theme .input-field {
+  background-color: #151D2A !important;
+  border-color: #263346 !important;
+  color: #F8FAFC !important;
+}
+
+.dark-theme select option {
+  background-color: #151D2A !important;
+  color: #F8FAFC !important;
+}
+
+.dark-theme input::placeholder,
+.dark-theme textarea::placeholder,
+.dark-theme .input-field::placeholder {
+  color: #94A3B8 !important;
+  opacity: 1 !important;
+}
+
+.dark-theme input:-webkit-autofill,
+.dark-theme input:-webkit-autofill:hover,
+.dark-theme input:-webkit-autofill:focus {
+  -webkit-text-fill-color: #F8FAFC !important;
+  -webkit-box-shadow: 0 0 0px 1000px #151D2A inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+.dark-theme label {
+  color: #F8FAFC !important;
+}
+
+.dark-theme th {
+  color: #CBD5E1 !important;
+  border-bottom-color: #263346 !important;
+}
+
+.dark-theme td {
+  color: #F8FAFC !important;
+  border-bottom-color: #263346 !important;
+}
+
+.dark-theme tr:hover td {
+  background-color: rgba(59, 130, 246, 0.08) !important;
+}
+
+/* Secondary Button in Dark Theme */
+.dark-theme .btn-secondary {
+  background: #151D2A !important;
+  color: #F8FAFC !important;
+  border-color: #263346 !important;
+}
+
+.dark-theme .btn-secondary:hover {
+  background: rgba(59, 130, 246, 0.15) !important;
+  border-color: #3B82F6 !important;
+  color: #60A5FA !important;
+}
+
+/* Recharts Dark Theme Visual Fixes */
+.dark-theme .recharts-text,
+.dark-theme .recharts-cartesian-axis-tick-value tspan {
+  fill: #CBD5E1 !important;
+}
+
+.dark-theme .recharts-legend-item-text {
+  color: #F8FAFC !important;
+}
+
+.dark-theme .recharts-default-tooltip {
+  background-color: #151D2A !important;
+  border-color: #263346 !important;
+  color: #F8FAFC !important;
+}
+
+.dark-theme .recharts-tooltip-item,
+.dark-theme .recharts-tooltip-label {
+  color: #F8FAFC !important;
+}
+
+.dark-theme .recharts-cartesian-grid-line {
+  stroke: #263346 !important;
+}
+
 .data-table {
   width: 100%;
   border-collapse: collapse;
@@ -238,4 +335,40 @@ h1, h2, h3, h4, h5, h6 {
 }
 ::-webkit-scrollbar-thumb:hover {
   background: #94A3B8;
+}
+
+/* Universal Mobile & Tablet Responsiveness Rules */
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 16px 14px !important;
+    gap: 16px !important;
+  }
+  .card {
+    border-radius: var(--radius-md);
+  }
+  .btn-primary, .btn-secondary {
+    padding: 9px 16px;
+    font-size: 13px;
+  }
+  .data-table th, .data-table td {
+    padding: 10px 12px;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboard-container {
+    padding: 12px 10px !important;
+    gap: 12px !important;
+  }
+  h1 { font-size: 20px !important; }
+  h2 { font-size: 18px !important; }
+  h3 { font-size: 16px !important; }
 }

@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { Search, Bell, Sun, Moon, User, Settings, LogOut, ChevronDown, CheckCircle, AlertTriangle, Sparkles, Database } from 'lucide-react'
+import { Bell, Sun, Moon, User, Settings, LogOut, ChevronDown, CheckCircle, AlertTriangle, Sparkles, Database, Menu } from 'lucide-react'
 import { authFetch } from '../utils/api'
 import '../styles/Navbar.css'
 
-export default function Navbar({ title, darkMode, onToggleDark }) {
+export default function Navbar({ title, darkMode, onToggleDark, onToggleMobileSidebar }) {
   const [showNotifications, setShowNotifications] = useState(false)
   const [showProfileMenu, setShowProfileMenu] = useState(false)
-  const [searchQuery, setSearchQuery] = useState('')
   const [notifications, setNotifications] = useState([])
   const navigate = useNavigate()
 
@@ -38,25 +37,16 @@ export default function Navbar({ title, darkMode, onToggleDark }) {
 
   return (
     <header className="navbar-header">
-      {/* Title */}
-      <div>
+      {/* Title & Mobile Toggle */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
+        <button className="navbar-mobile-menu-btn" onClick={onToggleMobileSidebar} title="Open Menu">
+          <Menu size={20} />
+        </button>
         <h1 className="navbar-title">{title}</h1>
       </div>
 
       {/* Right Controls */}
       <div className="navbar-actions">
-        {/* Search */}
-        <div className="navbar-search-wrapper">
-          <Search size={16} className="navbar-search-icon" />
-          <input
-            className="input-field navbar-search-input"
-            type="text"
-            placeholder="Search metrics, reports..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-
         {/* Dark Mode Toggle */}
         <button
           onClick={onToggleDark}

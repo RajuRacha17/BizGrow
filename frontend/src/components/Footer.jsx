@@ -27,7 +27,7 @@ export default function Footer() {
           <div className="pbis-footer-col">
             <h4 className="pbis-footer-heading">Product</h4>
             <ul className="pbis-footer-links">
-              <li><a href="/#how-it-works">How It Works</a></li>
+              <li><a href="/#how-it-works">Workflow</a></li>
               <li><a href="/#transformation-engine">Transformation Engine</a></li>
               <li><a href="/#diagnostic-advantage">Diagnostic Advantage</a></li>
               <li><a href="/#features">Features & Security</a></li>

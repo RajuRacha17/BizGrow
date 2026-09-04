@@ -9,8 +9,7 @@ import {
   ArrowRight,
   CheckCircle,
   ChevronDown,
-  ChevronUp,
-  Calculator
+  ChevronUp
 } from 'lucide-react'
 import PublicNavbar from '../components/PublicNavbar'
 import TransformationEngine from '../components/TransformationEngine'
@@ -19,10 +18,7 @@ import Footer from '../components/Footer'
 import '../styles/LandingPage.css'
 
 export default function LandingPage() {
-  const [monthlyRev, setMonthlyRev] = useState(50000)
   const [openFaq, setOpenFaq] = useState(0)
-
-  const projectedUpside = Math.round(monthlyRev * 0.24) // 24% boost
 
   const faqs = [
     {
@@ -36,10 +32,6 @@ export default function LandingPage() {
     {
       q: 'How accurate are the AI business forecasting models?',
       a: 'PBIS models evaluate historical velocity, customer churn signals, and seasonal trends to surface realistic diagnostic insight vectors.'
-    },
-    {
-      q: 'Can I cancel or change my subscription plan anytime?',
-      a: 'Absolutely. You can upgrade, downgrade, or cancel your subscription directly from your settings panel at any time without hidden penalties.'
     }
   ]
 
@@ -106,45 +98,10 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* Interactive ROI Calculator Widget */}
-      <section className="landing-section">
-        <div className="roi-calculator-card">
-          <div>
-            <div style={{ display: 'inline-flex', alignItems: 'center', gap: 6, color: '#60A5FA', fontSize: 13, fontWeight: 600, marginBottom: 8 }}>
-              <Calculator size={16} /> Interactive AI Growth Calculator
-            </div>
-            <h3 style={{ fontSize: 28, fontWeight: 800, marginBottom: 12 }}>Estimate Your Revenue Expansion</h3>
-            <p style={{ color: '#94A3B8', fontSize: 14, lineHeight: 1.6, marginBottom: 24 }}>
-              Drag the slider to your current monthly revenue to project potential growth unlocked by PBIS AI recommendations.
-            </p>
-
-            <label style={{ fontSize: 13, fontWeight: 600, color: '#CBD5E1' }}>Current Monthly Revenue ($)</label>
-            <input
-              type="range"
-              min="10000"
-              max="250000"
-              step="5000"
-              value={monthlyRev}
-              onChange={e => setMonthlyRev(Number(e.target.value))}
-              className="roi-slider"
-            />
-            <div className="roi-value-badge">${monthlyRev.toLocaleString()} / month</div>
-          </div>
-
-          <div className="roi-result-box">
-            <div style={{ fontSize: 13, color: '#94A3B8', textTransform: 'uppercase', letterSpacing: '0.05em', fontWeight: 600 }}>
-              Projected Monthly Revenue Upside
-            </div>
-            <div className="roi-upside-text">+${projectedUpside.toLocaleString()}</div>
-            <p style={{ fontSize: 12, color: '#94A3B8', marginTop: 8 }}>Based on average 24% revenue uplift across PBIS enterprise deployments.</p>
-          </div>
-        </div>
-      </section>
-
-      {/* How It Works Section */}
+      {/* Workflow Section */}
       <section className="landing-section" id="how-it-works">
-        <h2 className="landing-section-title">How PBIS Drives Results in 3 Steps</h2>
-        <p className="landing-section-subtitle">Automated intelligence that works seamlessly alongside your team.</p>
+        <h2 className="landing-section-title">PBIS Business Workflow</h2>
+        <p className="landing-section-subtitle">Automated intelligence that works seamlessly alongside your team in 3 simple steps.</p>
 
         <div className="landing-steps-grid">
           {[

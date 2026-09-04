@@ -21,7 +21,7 @@ const routeTitles = {
   '/dashboard': 'AI Business Analytics Dashboard',
   '/upload': 'Data Ingestion & Quality Profiler',
   '/ai-analysis': 'AI Pattern & Risk Diagnostics',
-  '/health': 'Business Health Index',
+  '/health': 'Business Health Score',
   '/performance': 'Performance & Gap Analysis',
   '/ai-recommendations': 'AI Growth Recommendations & Action Plan',
   '/reports': 'Executive Reports & PDF Exporter',
@@ -32,6 +32,7 @@ const routeTitles = {
 // Layout wrapper for authenticated dashboard routes
 function DashboardLayout({ darkMode, onToggleDark }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false)
   const location = useLocation()
   const title = routeTitles[location.pathname] || 'PBIS Analytics'
 
@@ -52,6 +53,8 @@ function DashboardLayout({ darkMode, onToggleDark }) {
       <Sidebar
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed(!sidebarCollapsed)}
+        mobileOpen={mobileSidebarOpen}
+        onCloseMobile={() => setMobileSidebarOpen(false)}
       />
 
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minWidth: 0 }}>
@@ -59,6 +62,7 @@ function DashboardLayout({ darkMode, onToggleDark }) {
           title={title}
           darkMode={darkMode}
           onToggleDark={onToggleDark}
+          onToggleMobileSidebar={() => setMobileSidebarOpen(!mobileSidebarOpen)}
         />
 
         <main style={{ flex: 1, overflowY: 'auto' }}>

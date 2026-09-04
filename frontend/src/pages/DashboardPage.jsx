@@ -278,16 +278,28 @@ export default function DashboardPage() {
               </div>
 
               {/* 3. WHAT NEEDS ATTENTION? */}
-              <div style={{ padding: 14, borderRadius: 8, border: '1px solid var(--border)', backgroundColor: 'var(--card-bg)' }}>
+              <div style={{ padding: 14, borderRadius: 8, border: '1px solid rgba(239,68,68,0.3)', backgroundColor: 'var(--card-bg)' }}>
                 <span style={{ fontSize: 11, fontWeight: 700, color: '#EF4444', textTransform: 'uppercase' }}>3. WHAT NEEDS ATTENTION?</span>
-                <p style={{ fontSize: 13, margin: '6px 0 0', color: 'var(--text-main)', lineHeight: 1.4 }}>
-                  {summaryData?.negativeFactors?.[0] || 'Some products or sales periods have room for improvement.'}
-                </p>
+                {summaryData?.attentionItems && summaryData.attentionItems.length > 0 ? (
+                  <div style={{ marginTop: 6, display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    {summaryData.attentionItems.slice(0, 2).map((att, i) => (
+                      <div key={i} style={{ fontSize: 12, color: 'var(--text-main)', lineHeight: 1.4 }}>
+                        <strong style={{ color: att.severity === 'HIGH' ? '#EF4444' : '#F59E0B' }}>
+                          [{att.severity || 'ATTENTION'}]:
+                        </strong> {att.detail}
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p style={{ fontSize: 13, margin: '6px 0 0', color: 'var(--text-main)', lineHeight: 1.4 }}>
+                    {summaryData?.negativeFactors?.[0] || 'Some products or sales periods have room for profit optimization.'}
+                  </p>
+                )}
               </div>
 
               {/* 4. WHAT SHOULD YOU DO NEXT? */}
               <div style={{ padding: 14, borderRadius: 8, border: '1px solid var(--border)', backgroundColor: 'var(--card-bg)' }}>
-                <span style={{ fontSize: 11, fontWeight: 700, color: '#7C3AED', textTransform: 'uppercase' }}>4. WHAT SHOULD YOU DO NEXT?</span>
+                <span style={{ fontSize: 11, fontWeight: 700, color: 'var(--secondary)', textTransform: 'uppercase' }}>4. WHAT SHOULD YOU DO NEXT?</span>
                 <p style={{ fontSize: 13, margin: '6px 0 0', color: 'var(--text-main)', lineHeight: 1.4 }}>
                   <Link to="/ai-recommendations" style={{ color: 'var(--primary)', fontWeight: 600, textDecoration: 'none' }}>
                     See what you should do first →
@@ -312,16 +324,18 @@ export default function DashboardPage() {
                 <ResponsiveContainer>
                   <LineChart data={salesDataState}>
                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--border)" />
-                    <XAxis dataKey="month" stroke="var(--text-light)" fontSize={12} />
-                    <YAxis stroke="var(--text-light)" fontSize={12} />
+                    <XAxis dataKey="month" stroke="var(--text-muted)" fontSize={12} />
+                    <YAxis stroke="var(--text-muted)" fontSize={12} />
                     <Tooltip 
                       formatter={(val) => [formatINR(val), '']} 
-                      contentStyle={{ backgroundColor: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--border)' }} 
+                      contentStyle={{ backgroundColor: 'var(--card-bg)', borderRadius: 12, border: '1px solid var(--border)', color: 'var(--text-main)' }} 
+                      itemStyle={{ color: 'var(--text-main)' }}
+                      labelStyle={{ color: 'var(--text-main)', fontWeight: 700 }}
                     />
-                    <Legend />
-                    <Line type="monotone" dataKey="revenue" stroke="#2563EB" strokeWidth={3} name="Revenue (₹)" dot={{ r: 4 }} />
-                    <Line type="monotone" dataKey="sales" stroke="#7C3AED" strokeWidth={2} name="Sales" />
-                    <Line type="monotone" dataKey="target" stroke="#CBD5E1" strokeDasharray="5 5" name="Target (₹)" />
+                    <Legend wrapperStyle={{ color: 'var(--text-main)' }} />
+                    <Line type="monotone" dataKey="revenue" stroke="var(--primary)" strokeWidth={3} name="Revenue (₹)" dot={{ r: 4 }} />
+                    <Line type="monotone" dataKey="sales" stroke="var(--secondary)" strokeWidth={2} name="Sales" />
+                    <Line type="monotone" dataKey="target" stroke="var(--text-light)" strokeDasharray="5 5" name="Target (₹)" />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -331,7 +345,7 @@ export default function DashboardPage() {
             <div className="card" style={{ padding: 24, display: 'flex', flexDirection: 'column', flex: '1 1 35%', minWidth: 280 }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 16 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-                  <Sparkles size={18} color="#7C3AED" />
+                  <Sparkles size={18} color="var(--secondary)" />
                   <h3 style={{ fontSize: 16, fontWeight: 700 }}>Important Things We Found</h3>
                 </div>
                 <Link to="/ai-recommendations" className="dashboard-view-all-link">
@@ -344,7 +358,7 @@ export default function DashboardPage() {
                   <div key={idx} className="dashboard-ai-item" style={{ padding: 12, borderRadius: 8, border: '1px solid var(--border)' }}>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 4 }}>
                       <span style={{ fontSize: 13, fontWeight: 600, color: 'var(--text-main)' }}>{rec.title}</span>
-                      <span className="badge badge-info" style={{ fontSize: 10, background: '#2563EB15', color: '#2563EB' }}>{rec.upside}</span>
+                      <span className="badge badge-info" style={{ fontSize: 10 }}>{rec.upside}</span>
                     </div>
                     <p style={{ fontSize: 12, color: 'var(--text-muted)', lineHeight: 1.4 }}>{rec.recommendedAction}</p>
                   </div>

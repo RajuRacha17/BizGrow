@@ -179,3 +179,44 @@
   background-color: var(--border);
   margin: 4px 0;
 }
+
+.navbar-mobile-menu-btn {
+  display: none;
+  width: 38px;
+  height: 38px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  background-color: var(--card-bg);
+  color: var(--text-main);
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .navbar-mobile-menu-btn {
+    display: flex;
+  }
+  .navbar-header {
+    padding: 0 16px;
+  }
+  .navbar-title {
+    font-size: 16px;
+  }
+  .navbar-search-wrapper {
+    display: none;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar-header {
+    padding: 0 12px;
+  }
+  .navbar-title {
+    font-size: 14px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 140px;
+  }
+}

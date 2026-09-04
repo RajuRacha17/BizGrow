@@ -159,13 +159,13 @@ export default function DataUploadPage() {
       </div>
 
       {errorMsg && (
-        <div style={{ padding: '12px 16px', borderRadius: 8, backgroundColor: '#fee2e2', color: '#dc2626', fontSize: 14, marginBottom: 20, border: '1px solid #fca5a5', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ padding: '12px 16px', borderRadius: 8, backgroundColor: 'rgba(239, 68, 68, 0.12)', color: '#EF4444', fontSize: 14, marginBottom: 20, border: '1px solid rgba(239, 68, 68, 0.3)', display: 'flex', alignItems: 'center', gap: 8 }}>
           <AlertTriangle size={18} /> {errorMsg}
         </div>
       )}
 
       {uploadStatus && (
-        <div style={{ padding: '12px 16px', borderRadius: 8, backgroundColor: '#dcfce7', color: '#166534', fontSize: 14, marginBottom: 20, border: '1px solid #86efac', display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ padding: '12px 16px', borderRadius: 8, backgroundColor: 'rgba(16, 185, 129, 0.12)', color: '#10B981', fontSize: 14, marginBottom: 20, border: '1px solid rgba(16, 185, 129, 0.3)', display: 'flex', alignItems: 'center', gap: 8 }}>
           <CheckCircle2 size={18} /> {uploadStatus}
         </div>
       )}
@@ -201,7 +201,7 @@ export default function DataUploadPage() {
             <FileSpreadsheet size={28} />
           </div>
 
-          <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 6 }}>
+          <h4 style={{ fontSize: 16, fontWeight: 600, marginBottom: 6, color: 'var(--text-main)' }}>
             {selectedFile ? selectedFile.name : 'Drag & Drop your CSV or Excel file here'}
           </h4>
           <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>

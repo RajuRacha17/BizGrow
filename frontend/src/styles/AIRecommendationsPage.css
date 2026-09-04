@@ -20,3 +20,18 @@
   flex-direction: column;
   gap: 16px;
 }
+
+/* Dark Theme Overrides for AI Recommendations Page */
+.dark-theme th {
+  color: #CBD5E1 !important;
+}
+
+.dark-theme td {
+  color: #F8FAFC !important;
+}
+
+.dark-theme select option {
+  background-color: #151D2A !important;
+  color: #F8FAFC !important;
+}
+
