@@ -3,8 +3,6 @@ import {
   Building,
   Lock,
   Bell,
-  Key,
-  CreditCard,
   Save,
   CheckCircle,
   AlertTriangle,
@@ -211,9 +209,7 @@ export default function SettingsPage() {
         {[
           { id: 'business', label: 'Business Profile', icon: Building },
           { id: 'security', label: 'Password & Security', icon: Lock },
-          { id: 'notifications', label: 'Notifications & Alerts', icon: Bell },
-          { id: 'api', label: 'API Keys & Webhooks', icon: Key },
-          { id: 'billing', label: 'Subscription & Billing', icon: CreditCard }
+          { id: 'notifications', label: 'Notifications & Alerts', icon: Bell }
         ].map(tab => {
           const Icon = tab.icon
           const isActive = activeTab === tab.id
@@ -569,38 +565,6 @@ export default function SettingsPage() {
           </div>
         )}
 
-        {/* TAB 4: API Keys */}
-        {activeTab === 'api' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 640 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700 }}>API Keys & Integration Access</h3>
-            <p style={{ fontSize: 13, color: 'var(--text-muted)' }}>Manage secret keys used to feed live data from your CRM or database into PBIS.</p>
-
-            <div style={{ padding: 16, border: '1px solid var(--border)', borderRadius: 12, display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <div style={{ fontWeight: 600, fontSize: 14 }}>Production Live Key</div>
-                <div style={{ fontSize: 12, fontFamily: 'monospace', color: 'var(--text-muted)', marginTop: 2 }}>pbis_live_948a73bc928104f...</div>
-              </div>
-              <button className="btn-secondary" style={{ fontSize: 12, padding: '6px 12px' }}>Copy Key</button>
-            </div>
-
-            <button className="btn-primary" style={{ width: 'fit-content' }}>+ Generate New API Secret Key</button>
-          </div>
-        )}
-
-        {/* TAB 5: Subscription & Billing */}
-        {activeTab === 'billing' && (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 20, maxWidth: 640 }}>
-            <h3 style={{ fontSize: 18, fontWeight: 700 }}>Current Subscription Plan</h3>
-            <div style={{ padding: 20, border: '2px solid #2563EB', borderRadius: 16, background: '#F8FAFF', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <div>
-                <span className="badge badge-info" style={{ marginBottom: 6 }}>Active Plan</span>
-                <div style={{ fontSize: 20, fontWeight: 800 }}>Pro Business Tier</div>
-                <div style={{ fontSize: 13, color: 'var(--text-muted)', marginTop: 2 }}>Renews automatically on Sept 1, 2026 (₹4,999/mo)</div>
-              </div>
-              <button className="btn-secondary" style={{ fontSize: 13 }}>Change Plan</button>
-            </div>
-          </div>
-        )}
       </div>
     </div>
   )

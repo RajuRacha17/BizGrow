@@ -13,6 +13,7 @@ const analysisSchema = new mongoose.Schema({
   categoryBreakdown: { type: Array, default: [] },
   customerData: { type: Object, default: {} },
   forecastData: { type: Object, default: {} },
+  mlAnalysis: { type: Object, default: {} },
   problems: { type: Array, default: [] },
   alerts: { type: Array, default: [] },
   recommendations: { type: Array, default: [] },
